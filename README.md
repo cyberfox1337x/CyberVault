@@ -140,14 +140,17 @@ Your local data should remain in `./data` and logs in `./logs`, unless you chang
 
 For normal use, install from `main`.
 
-## Important Notes
+## Security
 
-- Do not expose CyberVault directly to the public internet without HTTPS, strong auth, and a reverse proxy you trust.
-- Do not commit `.env`, API keys, OAuth tokens, database files, logs, or backups.
-- If you bind to `0.0.0.0`, anyone on the reachable network may be able to access the login page.
-- Some model providers require paid accounts or API keys.
-- Local model performance depends heavily on your CPU/GPU/RAM.
+CyberVault is designed as a self-hosted workspace so your chats, documents, provider settings, and local workflow data stay under your control.
 
-## License
+- Login protection can be enabled with `AUTH_ENABLED=true`.
+- Admin credentials and provider keys are loaded from `.env` instead of being hard-coded into the source.
+- Runtime folders such as `data`, `logs`, backups, caches, databases, and real environment files are ignored by Git.
+- The Docker stack keeps CyberVault, ChromaDB, and SearXNG organized as separate services.
+- Provider integrations are optional, so you can run only the local or cloud connections you choose to configure.
+- `.env.example` is included as a safe template; your real `.env` stays private on your machine or server.
 
-This repository includes the project license in [LICENSE](LICENSE).
+## Credits
+
+CyberVault is inspired by the Odysseus project and its idea of a self-hosted AI command center. Credit goes to Odysseus for the original concept direction and design inspiration that helped shape CyberVault into a darker, security-focused workspace.
