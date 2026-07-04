@@ -2100,7 +2100,8 @@ body.bg-pattern-sparkles {
     }
     .msg .role.has-logo::before { display: none; }
     .role-provider-logo { display: inline-flex; align-items: center; flex-shrink: 0; }
-    .role-provider-logo svg { width: 12px; height: 12px; }
+    .role-provider-logo svg,
+    .role-provider-logo img { width: 12px; height: 12px; display: block; object-fit: cover; border-radius: 3px; }
     .msg-user .role {
       color: color-mix(in srgb, var(--fg) 60%, transparent);
     }
@@ -7953,7 +7954,8 @@ a.chat-link:hover {
   display: inline-flex; align-items: center; justify-content: center;
   transition: opacity 0.15s;
 }
-.provider-logo svg { width: 14px; height: 14px; display: block; }
+.provider-logo svg,
+.provider-logo img { width: 14px; height: 14px; display: block; object-fit: cover; border-radius: 4px; }
 .provider-logo:hover { opacity: 1 !important; transform: scale(1.2); }
 
 /* Hide session menu button until hover — use width:0 so it doesn't steal space from text */
@@ -38486,19 +38488,56 @@ body.theme-frosted .modal {
    Real dashboard markup lives in index.html; this block styles that shell.
    ============================================================ */
 :root {
-  --od-admin-sidebar: #030712;
+  /* ── CyberVault design tokens — single source of truth for the shell ──
+     Surfaces (darkest → lightest): page → sidebar → panel-deep → panel-soft
+     → panel → panel-hover → panel-active. Borders come in two strengths;
+     text in three tiers. Change values here, never inline. */
+
+  /* Surfaces */
+  --od-admin-page: #02040a;
+  --od-admin-sidebar: #050914;
   --od-admin-sidebar-2: #0b1120;
-  --od-admin-page: #000000;
   --od-admin-panel: #111827;
   --od-admin-panel-soft: #0b1220;
-  --od-admin-border: #1f2937;
-  --od-admin-text: #f9fafb;
-  --od-admin-muted: #98a2b3;
-  --od-admin-blue: #465fff;
+  --od-admin-panel-deep: #080f1d;
+  --od-admin-panel-hover: #182230;
+  --od-admin-panel-active: #344054;
+
+  /* Borders */
+  --od-admin-border: rgba(96, 165, 250, 0.18);
+  --od-admin-border-strong: rgba(96, 165, 250, 0.35);
+  --od-admin-border-accent: #30476e;
+
+  /* Text */
+  --od-admin-text: #f8fafc;
+  --od-admin-text-2: #cbd5e1;
+  --od-admin-muted: #94a3b8;
+
+  /* Accents */
+  --od-admin-blue: #4f6bff;
+  --od-admin-blue-hover: #6d84ff;
   --od-admin-cyan: #22c7d8;
   --od-admin-green: #10d898;
   --od-admin-pink: #c45263;
+
+  /* Shape & focus */
+  --od-admin-radius-sm: 8px;
+  --od-admin-radius: 12px;
+  --od-admin-radius-lg: 16px;
+  --od-admin-focus-ring: 0 0 0 2px rgba(79, 107, 255, 0.45);
+
   --font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+
+  /* Friendly aliases (same tokens, spec names) */
+  --sidebar: var(--od-admin-sidebar);
+  --panel-hover: var(--od-admin-panel-hover);
+  --border-strong: var(--od-admin-border-strong);
+  --accent-hover: var(--od-admin-blue-hover);
+  --text-primary: var(--od-admin-text);
+  --text-secondary: var(--od-admin-text-2);
+  --text-muted: var(--od-admin-muted);
+
+  /* Legacy theme bridge (keeps theme.js and old rules working) */
   --bg: var(--od-admin-page);
   --fg: var(--od-admin-text);
   --panel: var(--od-admin-panel);
@@ -39376,7 +39415,7 @@ body.od-admin-shell #settings-modal .settings-select {
   border: 1px solid #26394b !important;
   border-radius: 3px !important;
   background: #242c36 !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   box-shadow: none !important;
 }
 
@@ -39418,36 +39457,36 @@ body.od-admin-shell #settings-modal #settings-logout-btn {
 body.od-admin-shell {
   --font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   background: #000000 !important;
-  color: #f9fafb;
+  color: var(--od-admin-text);
   font-family: var(--font-family) !important;
 }
 
 body.od-admin-shell .chat-container {
   padding-top: 112px;
   background: #000000 !important;
-  color: #f9fafb;
+  color: var(--od-admin-text);
 }
 
 body.od-admin-shell .sidebar {
   flex-basis: 290px;
   width: 290px;
-  background: #030712 !important;
-  border-right: 1px solid #1f2937 !important;
+  background: var(--od-admin-sidebar) !important;
+  border-right: 1px solid var(--od-admin-border) !important;
 }
 
 body.od-admin-shell .sidebar-header {
   height: 77px;
   min-height: 77px;
   padding: 0 28px;
-  background: #030712 !important;
-  border-bottom: 1px solid #1f2937;
+  background: var(--od-admin-sidebar) !important;
+  border-bottom: 1px solid var(--od-admin-border);
 }
 
 body.od-admin-shell .sidebar-brand-mark {
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  background: #465fff;
+  background: var(--od-admin-blue);
   box-shadow: none;
 }
 
@@ -39462,7 +39501,7 @@ body.od-admin-shell .sidebar-inner {
   height: calc(100vh - 147px);
   padding: 24px 20px 12px;
   gap: 6px;
-  background: #030712;
+  background: var(--od-admin-sidebar);
 }
 
 body.od-admin-shell .section-header-flex,
@@ -39474,7 +39513,7 @@ body.od-admin-shell .sidebar-assistant-entry {
   height: 44px;
   padding: 0 14px;
   border-radius: 8px;
-  color: #d0d5dd;
+  color: var(--od-admin-text-2);
   font-weight: 600;
 }
 
@@ -39485,13 +39524,13 @@ body.od-admin-shell .section-header-flex:hover,
 body.od-admin-shell .list-item:hover,
 body.od-admin-shell #sidebar-search-btn:hover,
 body.od-admin-shell .sidebar-assistant-entry:hover {
-  background: #182230 !important;
+  background: var(--od-admin-panel-hover) !important;
   color: #ffffff !important;
   box-shadow: none;
 }
 
 body.od-admin-shell #sidebar-new-chat-btn {
-  background: #465fff !important;
+  background: var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell .section-title,
@@ -39511,19 +39550,19 @@ body.od-admin-shell .list-item-plus-btn,
 body.od-admin-shell .chats-manage-btn {
   background: #101828;
   color: #ffffff;
-  border: 1px solid #344054;
+  border: 1px solid var(--od-admin-border-strong);
 }
 
 body.od-admin-shell .sidebar-user-bar {
   height: 70px;
   min-height: 70px;
   padding: 12px 22px;
-  background: #030712 !important;
-  border-top: 1px solid #1f2937;
+  background: var(--od-admin-sidebar) !important;
+  border-top: 1px solid var(--od-admin-border);
 }
 
 body.od-admin-shell .user-bar-btn {
-  border: 1px solid #344054;
+  border: 1px solid var(--od-admin-border-strong);
   background: #101828;
   color: #ffffff;
 }
@@ -39532,9 +39571,9 @@ body.od-admin-shell .hamburger-btn {
   left: 290px;
   width: 76px;
   height: 77px;
-  background: #111827 !important;
-  color: #d0d5dd;
-  border-right: 1px solid #1f2937;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text-2);
+  border-right: 1px solid var(--od-admin-border);
 }
 
 body.od-admin-shell .chat-top-bar {
@@ -39542,20 +39581,20 @@ body.od-admin-shell .chat-top-bar {
   height: 77px;
   min-height: 77px;
   grid-template-columns: 76px minmax(260px, 1fr) auto auto;
-  background: #111827 !important;
-  border-bottom: 1px solid #1f2937;
-  color: #d0d5dd;
+  background: var(--od-admin-panel) !important;
+  border-bottom: 1px solid var(--od-admin-border);
+  color: var(--od-admin-text-2);
 }
 
 body.od-admin-shell .topbar-menu-slot,
 body.od-admin-shell .topbar-search,
 body.od-admin-shell .topbar-icon {
   height: 77px;
-  border-color: #1f2937;
+  border-color: var(--od-admin-border);
 }
 
 body.od-admin-shell .topbar-search {
-  color: #98a2b3;
+  color: var(--od-admin-muted);
 }
 
 body.od-admin-shell .topbar-search input {
@@ -39563,12 +39602,12 @@ body.od-admin-shell .topbar-search input {
 }
 
 body.od-admin-shell .topbar-search input::placeholder {
-  color: #98a2b3;
+  color: var(--od-admin-muted);
 }
 
 body.od-admin-shell .chat-meta-overlay {
   height: 77px;
-  color: #d0d5dd;
+  color: var(--od-admin-text-2);
 }
 
 body.od-admin-shell .export-dl-btn {
@@ -39606,9 +39645,9 @@ body.od-admin-shell .doc-pane,
 body.od-admin-shell .email-reader,
 body.od-admin-shell #welcome-screen,
 body.od-admin-shell .chat-input-bar {
-  background: #111827 !important;
-  color: #f9fafb !important;
-  border: 1px solid #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text) !important;
+  border: 1px solid var(--od-admin-border) !important;
   border-radius: 16px !important;
   box-shadow: none !important;
 }
@@ -39629,7 +39668,7 @@ body.od-admin-shell #welcome-screen .welcome-tip,
 body.od-admin-shell .admin-toggle-sub,
 body.od-admin-shell .settings-subtext,
 body.od-admin-shell .admin-empty {
-  color: #98a2b3 !important;
+  color: var(--od-admin-muted) !important;
 }
 
 body.od-admin-shell #welcome-screen .incognito-btn,
@@ -39640,9 +39679,9 @@ body.od-admin-shell .dropdown,
 body.od-admin-shell .overflow-menu,
 body.od-admin-shell .session-dropdown,
 body.od-admin-shell .model-picker-menu {
-  background: #111827 !important;
-  color: #f9fafb !important;
-  border: 1px solid #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text) !important;
+  border: 1px solid var(--od-admin-border) !important;
   border-radius: 12px !important;
   box-shadow: none !important;
 }
@@ -39652,13 +39691,13 @@ body.od-admin-shell input,
 body.od-admin-shell textarea,
 body.od-admin-shell select,
 body.od-admin-shell .settings-select {
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: #ffffff !important;
-  border-color: #344054 !important;
+  border-color: var(--od-admin-border-strong) !important;
 }
 
 body.od-admin-shell .chat-input-bar textarea#message {
-  border: 1px solid #344054;
+  border: 1px solid var(--od-admin-border-strong);
   border-radius: 12px;
   padding: 10px 152px 10px 12px;
 }
@@ -39668,8 +39707,8 @@ body.od-admin-shell input:focus,
 body.od-admin-shell textarea:focus,
 body.od-admin-shell select:focus {
   outline: 0;
-  border-color: #465fff !important;
-  box-shadow: 0 0 0 3px rgba(70,95,255,0.18) !important;
+  border-color: #3a4a67 !important;
+  box-shadow: none !important;
 }
 
 body.od-admin-shell .chat-input-bar textarea#message::placeholder,
@@ -39679,22 +39718,22 @@ body.od-admin-shell textarea::placeholder {
 }
 
 body.od-admin-shell .input-icon-btn {
-  color: #98a2b3;
+  color: var(--od-admin-muted);
 }
 
 body.od-admin-shell .input-icon-btn:hover {
-  background: #182230;
+  background: var(--od-admin-panel-hover);
   color: #ffffff;
 }
 
 body.od-admin-shell .mode-toggle-btn {
-  color: #98a2b3;
+  color: var(--od-admin-muted);
 }
 
 body.od-admin-shell .mode-toggle-btn.active,
 body.od-admin-shell .mode-toggle-btn[aria-pressed="true"],
 body.od-admin-shell .send-btn {
-  background: #465fff !important;
+  background: var(--od-admin-blue) !important;
   color: #ffffff !important;
 }
 
@@ -39703,30 +39742,30 @@ body.od-admin-shell .modal:not(.hidden) {
 }
 
 body.od-admin-shell .modal-header {
-  background: #111827 !important;
-  border-bottom: 1px solid #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
 }
 
 body.od-admin-shell .modal-header .close-btn,
 body.od-admin-shell .modal-header .modal-close,
 body.od-admin-shell .modal-header .modal-minimize-btn {
-  background: #182230 !important;
+  background: var(--od-admin-panel-hover) !important;
   color: #ffffff !important;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
 }
 
 body.od-admin-shell #settings-modal .settings-layout,
 body.od-admin-shell #settings-modal .settings-content {
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell #settings-modal .settings-sidebar {
-  background: #0b1220 !important;
-  border-right: 1px solid #1f2937 !important;
+  background: var(--od-admin-panel-soft) !important;
+  border-right: 1px solid var(--od-admin-border) !important;
 }
 
 body.od-admin-shell #settings-modal .settings-sidebar-divider {
-  background: #1f2937 !important;
+  background: var(--od-admin-panel-hover) !important;
 }
 
 body.od-admin-shell #settings-modal .settings-sidebar-label {
@@ -39734,39 +39773,39 @@ body.od-admin-shell #settings-modal .settings-sidebar-label {
 }
 
 body.od-admin-shell #settings-modal .settings-nav-item {
-  color: #98a2b3 !important;
+  color: var(--od-admin-muted) !important;
   border-radius: 8px !important;
 }
 
 body.od-admin-shell #settings-modal .settings-nav-item:hover,
 body.od-admin-shell #settings-modal .settings-nav-item.active {
-  background: #182230 !important;
+  background: var(--od-admin-panel-hover) !important;
   color: #ffffff !important;
 }
 
 body.od-admin-shell #settings-modal .admin-card {
-  background: #111827 !important;
-  border-color: #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  border-color: var(--od-admin-border) !important;
 }
 
 body.od-admin-shell #settings-modal .admin-card h2 {
-  border-bottom: 1px solid #344054;
+  border-bottom: 1px solid var(--od-admin-border-strong);
 }
 
 body.od-admin-shell #settings-modal input,
 body.od-admin-shell #settings-modal textarea,
 body.od-admin-shell #settings-modal select,
 body.od-admin-shell #settings-modal .settings-select {
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: #ffffff !important;
-  border-color: #344054 !important;
+  border-color: var(--od-admin-border-strong) !important;
   border-radius: 10px !important;
 }
 
 body.od-admin-shell #settings-modal .admin-btn-sm,
 body.od-admin-shell #settings-modal .admin-btn-add,
 body.od-admin-shell #settings-modal .settings-save-btn {
-  background: #465fff !important;
+  background: var(--od-admin-blue) !important;
   color: #ffffff !important;
   border-radius: 10px !important;
 }
@@ -39800,9 +39839,9 @@ body.od-admin-shell #email-lib-modal .modal-content,
 body.od-admin-shell #compare-model-overlay .modal-content,
 body.od-admin-shell #research-overlay .modal-content,
 body.od-admin-shell #theme-popup {
-  background: #111827 !important;
-  color: #f9fafb !important;
-  border: 1px solid #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text) !important;
+  border: 1px solid var(--od-admin-border) !important;
   border-radius: 18px !important;
   box-shadow: 0 24px 80px rgba(0,0,0,0.58) !important;
 }
@@ -39810,7 +39849,7 @@ body.od-admin-shell #theme-popup {
 body.od-admin-shell .modal-header {
   min-height: 64px;
   padding: 0 24px !important;
-  border-bottom: 1px solid #1f2937 !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
 }
 
 body.od-admin-shell .modal-header h4,
@@ -39821,13 +39860,13 @@ body.od-admin-shell .doclib-card-title,
 body.od-admin-shell .doclib-panel-title,
 body.od-admin-shell .settings-row label,
 body.od-admin-shell .admin-toggle-label {
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
   font-weight: 700 !important;
   text-decoration: none !important;
 }
 
 body.od-admin-shell .admin-card h2 {
-  border-bottom: 1px solid #1f2937 !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
 }
 
 body.od-admin-shell .modal-body,
@@ -39836,7 +39875,7 @@ body.od-admin-shell .cookbook-body,
 body.od-admin-shell .gallery-body,
 body.od-admin-shell .tasks-body {
   background: transparent !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell .lib-tabs,
@@ -39848,8 +39887,8 @@ body.od-admin-shell .gallery-tabs {
   align-items: flex-end;
   gap: 8px;
   padding: 12px 14px 0 !important;
-  border-bottom: 1px solid #1f2937 !important;
-  background: #111827 !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell .lib-tab,
@@ -39867,7 +39906,7 @@ body.od-admin-shell .gallery-tab {
   border-bottom: 0 !important;
   border-radius: 10px 10px 0 0 !important;
   background: transparent !important;
-  color: #d0d5dd !important;
+  color: var(--od-admin-text-2) !important;
   font-size: 13px !important;
   font-weight: 650 !important;
   line-height: 1;
@@ -39879,7 +39918,7 @@ body.od-admin-shell .lib-tab:hover,
 body.od-admin-shell .memory-tab:hover,
 body.od-admin-shell .admin-tab:hover,
 body.od-admin-shell .gallery-tab:hover {
-  background: #182230 !important;
+  background: var(--od-admin-panel-hover) !important;
   color: #ffffff !important;
 }
 
@@ -39887,10 +39926,10 @@ body.od-admin-shell .lib-tab.active,
 body.od-admin-shell .memory-tab.active,
 body.od-admin-shell .admin-tab.active,
 body.od-admin-shell .gallery-tab.active {
-  background: #182230 !important;
-  border-color: #344054 !important;
+  background: var(--od-admin-panel-hover) !important;
+  border-color: var(--od-admin-border-strong) !important;
   color: #ffffff !important;
-  box-shadow: inset 0 -2px 0 #465fff !important;
+  box-shadow: inset 0 -2px 0 var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell .lib-tab svg,
@@ -39912,7 +39951,7 @@ body.od-admin-shell .settings-subtext,
 body.od-admin-shell .doclib-empty,
 body.od-admin-shell .empty-state,
 body.od-admin-shell .admin-empty {
-  color: #98a2b3 !important;
+  color: var(--od-admin-muted) !important;
 }
 
 body.od-admin-shell .doclib-desc,
@@ -39938,10 +39977,10 @@ body.od-admin-shell .color-reset-btn {
   gap: 7px;
   margin-top: 0 !important;
   padding: 0 12px !important;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 10px !important;
-  background: #0b1220 !important;
-  color: #d0d5dd !important;
+  background: var(--od-admin-panel-soft) !important;
+  color: var(--od-admin-text-2) !important;
   font-size: 12px !important;
   font-weight: 650 !important;
   line-height: 1 !important;
@@ -39957,8 +39996,8 @@ body.od-admin-shell .admin-btn-add:hover,
 body.od-admin-shell .reader-icon-btn:hover,
 body.od-admin-shell .vis-reset-btn:hover,
 body.od-admin-shell .color-reset-btn:hover {
-  background: #182230 !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-panel-hover) !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
 }
 
@@ -39966,7 +40005,7 @@ body.od-admin-shell .memory-toolbar-btn.active,
 body.od-admin-shell .doclib-chip.active,
 body.od-admin-shell .reader-icon-btn.active {
   background: rgba(70,95,255,0.16) !important;
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
 }
 
@@ -39974,8 +40013,8 @@ body.od-admin-shell .admin-btn-add,
 body.od-admin-shell .settings-save-btn,
 body.od-admin-shell .doclib-primary,
 body.od-admin-shell .send-btn {
-  background: #465fff !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-blue) !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
 }
 
@@ -40009,9 +40048,9 @@ body.od-admin-shell input[type="password"],
 body.od-admin-shell textarea,
 body.od-admin-shell select {
   min-height: 34px;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 10px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -40026,7 +40065,7 @@ body.od-admin-shell .settings-select:focus,
 body.od-admin-shell input:focus,
 body.od-admin-shell textarea:focus,
 body.od-admin-shell select:focus {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow: 0 0 0 3px rgba(70,95,255,0.18) !important;
 }
 
@@ -40037,10 +40076,10 @@ body.od-admin-shell .gallery-card,
 body.od-admin-shell .email-account-card,
 body.od-admin-shell .admin-user-row,
 body.od-admin-shell .vis-row {
-  background: #0b1220 !important;
-  border: 1px solid #1f2937 !important;
+  background: var(--od-admin-panel-soft) !important;
+  border: 1px solid var(--od-admin-border) !important;
   border-radius: 14px !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
   box-shadow: none !important;
 }
 
@@ -40048,7 +40087,7 @@ body.od-admin-shell .doclib-card:hover,
 body.od-admin-shell .memory-item:hover,
 body.od-admin-shell .task-item:hover,
 body.od-admin-shell .gallery-card:hover {
-  border-color: #344054 !important;
+  border-color: var(--od-admin-border-strong) !important;
   background: #101828 !important;
 }
 
@@ -40060,7 +40099,7 @@ body.od-admin-shell #doclib-grid,
 body.od-admin-shell #doclib-chats-list,
 body.od-admin-shell #doclib-archive-list,
 body.od-admin-shell #doclib-research-list {
-  scrollbar-color: #344054 transparent;
+  scrollbar-color: var(--od-admin-border-strong) transparent;
 }
 
 body.od-admin-shell ::selection {
@@ -40084,10 +40123,10 @@ body.od-admin-shell .ge-filter-menu,
 body.od-admin-shell .ge-layers-merge-menu {
   min-width: 168px;
   padding: 8px !important;
-  background: #111827 !important;
-  border: 1px solid #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  border: 1px solid var(--od-admin-border) !important;
   border-radius: 14px !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
   box-shadow: 0 18px 48px rgba(0,0,0,0.56) !important;
 }
 
@@ -40105,7 +40144,7 @@ body.od-admin-shell .ge-fx-menu-item {
   border: 0 !important;
   border-radius: 10px !important;
   background: transparent !important;
-  color: #d0d5dd !important;
+  color: var(--od-admin-text-2) !important;
   font-family: var(--font-family) !important;
   font-size: 13px !important;
   font-weight: 600 !important;
@@ -40119,7 +40158,7 @@ body.od-admin-shell .dropdown-item-compact:hover,
 body.od-admin-shell .export-dropdown-item:hover,
 body.od-admin-shell .overflow-menu-item:hover,
 body.od-admin-shell .ge-fx-menu-item:hover {
-  background: #182230 !important;
+  background: var(--od-admin-panel-hover) !important;
   color: #ffffff !important;
 }
 
@@ -40134,7 +40173,7 @@ body.od-admin-shell .overflow-menu-item.active {
 body.od-admin-shell .sort-dropdown-sep,
 body.od-admin-shell .dropdown-separator,
 body.od-admin-shell .overflow-separator {
-  border-top: 1px solid #1f2937 !important;
+  border-top: 1px solid var(--od-admin-border) !important;
   margin: 6px 0 !important;
 }
 
@@ -40142,24 +40181,24 @@ body.od-admin-shell .dropdown-icon,
 body.od-admin-shell .menu-icon,
 body.od-admin-shell .overflow-menu-item svg,
 body.od-admin-shell .sort-dropdown-item svg {
-  color: #98a2b3 !important;
+  color: var(--od-admin-muted) !important;
   opacity: 1 !important;
 }
 
 body.od-admin-shell .section-header-btn,
 body.od-admin-shell .chats-manage-btn,
 body.od-admin-shell .list-item-plus-btn {
-  background: #0b1220 !important;
-  border: 1px solid #344054 !important;
-  color: #d0d5dd !important;
+  background: var(--od-admin-panel-soft) !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
+  color: var(--od-admin-text-2) !important;
   border-radius: 8px !important;
 }
 
 body.od-admin-shell .section-header-btn:hover,
 body.od-admin-shell .chats-manage-btn:hover,
 body.od-admin-shell .list-item-plus-btn:hover {
-  background: #182230 !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-panel-hover) !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
 }
 
@@ -40168,9 +40207,9 @@ body.od-admin-shell pre,
 body.od-admin-shell .skill-md-pre,
 body.od-admin-shell .skill-md-editor {
   font-family: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", Menlo, Consolas, monospace !important;
-  background: #030712 !important;
+  background: var(--od-admin-sidebar) !important;
   color: #e4e7ec !important;
-  border-color: #1f2937 !important;
+  border-color: var(--od-admin-border) !important;
 }
 
 @media (min-width: 769px) {
@@ -40306,13 +40345,13 @@ body.od-admin-shell .skill-md-editor {
 
 /* TailAdmin final polish: remove legacy red/pink accents from normal UI chrome. */
 body.od-admin-shell {
-  --red: #465fff;
-  --accent: #465fff;
-  --accent-primary: #465fff;
-  --color-accent: #465fff;
-  --toggle-active: #465fff;
-  --send-btn-bg: #465fff;
-  --send-btn-hover: #5f73ff;
+  --red: var(--od-admin-blue);
+  --accent: var(--od-admin-blue);
+  --accent-primary: var(--od-admin-blue);
+  --color-accent: var(--od-admin-blue);
+  --toggle-active: var(--od-admin-blue);
+  --send-btn-bg: var(--od-admin-blue);
+  --send-btn-hover: var(--od-admin-blue-hover);
   --color-error: #f04438;
   --color-danger: #f04438;
 }
@@ -40320,7 +40359,7 @@ body.od-admin-shell {
 body.od-admin-shell *,
 body.od-admin-shell *::before,
 body.od-admin-shell *::after {
-  scrollbar-color: #344054 transparent !important;
+  scrollbar-color: var(--od-admin-border-strong) transparent !important;
 }
 
 body.od-admin-shell *::-webkit-scrollbar {
@@ -40333,8 +40372,8 @@ body.od-admin-shell *::-webkit-scrollbar-track {
 }
 
 body.od-admin-shell *::-webkit-scrollbar-thumb {
-  background: #344054 !important;
-  border: 2px solid #0b1220 !important;
+  background: var(--od-admin-panel-active) !important;
+  border: 2px solid var(--od-admin-panel-soft) !important;
   border-radius: 999px !important;
 }
 
@@ -40348,8 +40387,8 @@ body.od-admin-shell .doclib-primary,
 body.od-admin-shell .admin-btn-add,
 body.od-admin-shell .settings-save-btn,
 body.od-admin-shell button.cal-btn.cal-btn-primary {
-  background: #465fff !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-blue) !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -40360,38 +40399,38 @@ body.od-admin-shell .doclib-primary:hover,
 body.od-admin-shell .admin-btn-add:hover,
 body.od-admin-shell .settings-save-btn:hover,
 body.od-admin-shell button.cal-btn.cal-btn-primary:hover {
-  background: #5f73ff !important;
-  border-color: #5f73ff !important;
+  background: var(--od-admin-blue-hover) !important;
+  border-color: var(--od-admin-blue-hover) !important;
   opacity: 1 !important;
 }
 
 body.od-admin-shell .research-start-btn:disabled,
 body.od-admin-shell .research-start-btn.research-start-busy,
 body.od-admin-shell button:disabled {
-  background: #344054 !important;
-  border-color: #344054 !important;
-  color: #98a2b3 !important;
+  background: var(--od-admin-panel-active) !important;
+  border-color: var(--od-admin-border-strong) !important;
+  color: var(--od-admin-muted) !important;
   cursor: not-allowed !important;
 }
 
 body.od-admin-shell .notes-pane {
-  background: #111827 !important;
-  color: #f9fafb !important;
-  border-color: #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text) !important;
+  border-color: var(--od-admin-border) !important;
   box-shadow: -24px 0 80px rgba(0,0,0,0.56) !important;
 }
 
 body.od-admin-shell .notes-pane-header,
 body.od-admin-shell .notes-pane-footer {
-  background: #111827 !important;
-  border-color: #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  border-color: var(--od-admin-border) !important;
 }
 
 body.od-admin-shell .notes-pane-title,
 body.od-admin-shell .notes-pane-title svg,
 body.od-admin-shell .note-form-header,
 body.od-admin-shell .note-card-header {
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell .notes-pane-body,
@@ -40399,18 +40438,18 @@ body.od-admin-shell .note-form,
 body.od-admin-shell .note-card,
 body.od-admin-shell .notes-quick-add,
 body.od-admin-shell .notes-labels-bar {
-  background: #0b1220 !important;
-  border-color: #1f2937 !important;
-  color: #f9fafb !important;
+  background: var(--od-admin-panel-soft) !important;
+  border-color: var(--od-admin-border) !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell .notes-onboarding-pop,
 body.od-admin-shell .tour-hint,
 body.od-admin-shell .styled-confirm-box,
 body.od-admin-shell .styled-prompt-box {
-  background: #111827 !important;
-  color: #f9fafb !important;
-  border: 1px solid #344054 !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text) !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 14px !important;
   box-shadow: 0 18px 48px rgba(0,0,0,0.56) !important;
 }
@@ -40419,9 +40458,9 @@ body.od-admin-shell .notes-onboarding-pop button,
 body.od-admin-shell .tour-hint button,
 body.od-admin-shell .styled-confirm-box button,
 body.od-admin-shell .styled-prompt-box button {
-  background: #0b1220 !important;
-  border: 1px solid #344054 !important;
-  color: #d0d5dd !important;
+  background: var(--od-admin-panel-soft) !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
+  color: var(--od-admin-text-2) !important;
   border-radius: 10px !important;
 }
 
@@ -40429,18 +40468,18 @@ body.od-admin-shell .notes-onboarding-pop button:hover,
 body.od-admin-shell .tour-hint button:hover,
 body.od-admin-shell .styled-confirm-box button:hover,
 body.od-admin-shell .styled-prompt-box button:hover {
-  background: #182230 !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-panel-hover) !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
 }
 
 body.od-admin-shell input[type="range"] {
-  accent-color: #465fff !important;
+  accent-color: var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell input[type="range"]::-webkit-slider-thumb {
-  background: #465fff !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-blue) !important;
+  border-color: var(--od-admin-blue) !important;
 }
 
 /* TailAdmin brand controls: replace bare - / x modal chrome with Odysseus mark. */
@@ -40467,7 +40506,7 @@ body.od-admin-shell .modal-header .modal-minimize-btn {
   width: 22px !important;
   min-width: 22px !important;
   border-radius: 6px !important;
-  background: #465fff !important;
+  background: var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell .modal-header .minimize-btn::before,
@@ -40506,7 +40545,7 @@ body.od-admin-shell .modal-header .modal-close::before {
 
 body.od-admin-shell .modal-header .minimize-btn:hover,
 body.od-admin-shell .modal-header .modal-minimize-btn:hover {
-  background: #5f73ff !important;
+  background: var(--od-admin-blue-hover) !important;
   opacity: 1 !important;
 }
 
@@ -40544,16 +40583,16 @@ body.od-admin-shell #tasks-modal .modal-header .close-btn {
 }
 
 body.od-admin-shell input[type="range"]::-moz-range-thumb {
-  background: #465fff !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-blue) !important;
+  border-color: var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell input[type="range"]::-webkit-slider-runnable-track {
-  background-color: #344054 !important;
+  background-color: var(--od-admin-panel-active) !important;
 }
 
 body.od-admin-shell input[type="range"]::-moz-range-track {
-  background-color: #344054 !important;
+  background-color: var(--od-admin-panel-active) !important;
 }
 
 /* CyberVault collapsed rail polish: no dead sidebar strip, clear compact brand. */
@@ -40561,8 +40600,8 @@ body.od-admin-shell .icon-rail {
   width: 48px !important;
   min-width: 48px !important;
   max-width: 48px !important;
-  background: #030712 !important;
-  border-right: 1px solid #1f2937 !important;
+  background: var(--od-admin-sidebar) !important;
+  border-right: 1px solid var(--od-admin-border) !important;
   box-shadow: none !important;
   padding: 56px 6px 10px !important;
   gap: 5px !important;
@@ -40592,12 +40631,12 @@ body.od-admin-shell .icon-rail-btn {
   width: 34px !important;
   height: 34px !important;
   border-radius: 9px !important;
-  color: #465fff !important;
+  color: var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell .icon-rail-btn:hover,
 body.od-admin-shell .icon-rail-btn.active-section {
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   color: #ffffff !important;
 }
 
@@ -40608,12 +40647,12 @@ body.od-admin-shell .hamburger-btn {
   height: 30px !important;
   border-radius: 9px !important;
   background: transparent !important;
-  color: #d0d5dd !important;
+  color: var(--od-admin-text-2) !important;
   opacity: 1 !important;
 }
 
 body.od-admin-shell .hamburger-btn:hover {
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   color: #ffffff !important;
 }
 
@@ -40733,13 +40772,13 @@ body.od-admin-shell .hamburger-btn {
   border: 1px solid rgba(102, 112, 133, 0.32) !important;
   border-radius: 11px !important;
   background: rgba(17, 24, 39, 0.88) !important;
-  color: #d0d5dd !important;
+  color: var(--od-admin-text-2) !important;
   box-shadow: none !important;
 }
 
 body.od-admin-shell .hamburger-btn:hover {
   border-color: rgba(70, 95, 255, 0.65) !important;
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell:has(.sidebar.hidden) .hamburger-btn {
@@ -40752,7 +40791,7 @@ body.od-admin-shell:has(.sidebar.hidden) .hamburger-btn {
   background:
     linear-gradient(rgba(3, 7, 18, 0.28), rgba(3, 7, 18, 0.28)),
     url("/static/cybervault-logo.png") center / 86% no-repeat,
-    #030712 !important;
+    var(--od-admin-sidebar) !important;
   color: transparent !important;
   box-shadow: 0 0 12px rgba(34, 199, 216, 0.16) !important;
 }
@@ -40801,7 +40840,7 @@ body.od-admin-shell .topbar-search {
   gap: 12px !important;
   border: 1px solid rgba(52, 64, 84, 0.8) !important;
   border-radius: 12px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   box-sizing: border-box !important;
 }
 
@@ -40810,7 +40849,7 @@ body.od-admin-shell .topbar-search input {
   padding: 0 !important;
   font-size: 14px !important;
   line-height: 40px !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell .chat-meta-overlay {
@@ -40818,7 +40857,7 @@ body.od-admin-shell .chat-meta-overlay {
   min-width: 148px !important;
   padding: 0 4px !important;
   justify-content: center !important;
-  color: #d0d5dd !important;
+  color: var(--od-admin-text-2) !important;
   white-space: nowrap !important;
 }
 
@@ -40827,11 +40866,11 @@ body.od-admin-shell .topbar-actions {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
-  gap: 8px !important;
+  gap: 4px !important;
   padding: 3px !important;
   border: 1px solid rgba(52, 64, 84, 0.62) !important;
   border-radius: 12px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
 }
 
 body.od-admin-shell .topbar-icon {
@@ -40843,7 +40882,7 @@ body.od-admin-shell .topbar-icon {
 }
 
 body.od-admin-shell .topbar-icon:hover {
-  background: #182230 !important;
+  background: var(--od-admin-panel-hover) !important;
 }
 
 body.od-admin-shell .topbar-icon.status::after,
@@ -40888,7 +40927,7 @@ body.od-admin-shell #welcome-screen {
   border-radius: 18px !important;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
-    #111827 !important;
+    var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell .cybervault-logo-hero,
@@ -41080,7 +41119,7 @@ body.od-admin-shell .topbar-search {
   padding: 0 15px !important;
   border: 1px solid rgba(71, 85, 105, 0.82) !important;
   border-radius: 14px !important;
-  background: #080f1d !important;
+  background: var(--od-admin-panel-deep) !important;
   box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.75) !important;
 }
 
@@ -41102,7 +41141,7 @@ body.od-admin-shell .topbar-search input {
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   box-shadow: none !important;
   outline: 0 !important;
 }
@@ -41113,7 +41152,7 @@ body.od-admin-shell .topbar-search input:focus {
 }
 
 body.od-admin-shell .topbar-search:focus-within {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow: 0 0 0 3px rgba(70, 95, 255, 0.18), inset 0 0 0 1px rgba(15, 23, 42, 0.75) !important;
 }
 
@@ -41127,7 +41166,7 @@ body.od-admin-shell .dashboard-search-results {
   padding: 8px !important;
   border: 1px solid rgba(71, 85, 105, 0.88) !important;
   border-radius: 14px !important;
-  background: #080f1d !important;
+  background: var(--od-admin-panel-deep) !important;
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.46) !important;
   z-index: 120 !important;
 }
@@ -41146,7 +41185,7 @@ body.od-admin-shell .dashboard-search-results .search-result-item {
   min-height: 38px !important;
   align-items: center !important;
   border-radius: 9px !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell .dashboard-search-results .search-result-item:hover,
@@ -41166,12 +41205,12 @@ body.od-admin-shell .dashboard-search-results .search-source-item .search-result
 }
 
 body.od-admin-shell .dashboard-search-results .search-source-item .search-result-snippet strong {
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   font-size: 13px !important;
 }
 
 body.od-admin-shell .dashboard-search-results .search-source-item .search-result-snippet span {
-  color: #94a3b8 !important;
+  color: var(--od-admin-muted) !important;
   font-size: 11px !important;
   line-height: 1.35 !important;
 }
@@ -41185,12 +41224,12 @@ body.od-admin-shell .dashboard-search-results mark {
 }
 
 body.od-admin-shell .dashboard-search-results .search-result-time {
-  color: #94a3b8 !important;
+  color: var(--od-admin-muted) !important;
 }
 
 body.od-admin-shell .dashboard-search-results .search-empty {
   padding: 14px 12px !important;
-  color: #94a3b8 !important;
+  color: var(--od-admin-muted) !important;
   font-weight: 700 !important;
 }
 
@@ -41205,8 +41244,8 @@ body.od-admin-shell .model-picker-btn {
   padding: 0 10px !important;
   border: 1px solid rgba(71, 85, 105, 0.86) !important;
   border-radius: 999px !important;
-  background: #0b1220 !important;
-  color: #f8fafc !important;
+  background: var(--od-admin-panel-soft) !important;
+  color: var(--od-admin-text) !important;
   box-shadow: none !important;
   font-size: 11px !important;
   font-weight: 800 !important;
@@ -41215,8 +41254,8 @@ body.od-admin-shell .model-picker-btn {
 
 body.od-admin-shell .model-picker-btn:hover,
 body.od-admin-shell .model-picker-btn:focus-visible {
-  border-color: #465fff !important;
-  background: #111827 !important;
+  border-color: var(--od-admin-blue) !important;
+  background: var(--od-admin-panel) !important;
   box-shadow: 0 0 0 3px rgba(70, 95, 255, 0.16) !important;
 }
 
@@ -41246,7 +41285,7 @@ body.od-admin-shell .modal-header .modal-minimize-btn {
   min-width: 20px !important;
   height: 20px !important;
   border-radius: 7px !important;
-  background: #465fff !important;
+  background: var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell .modal-header .minimize-btn::before,
@@ -41289,8 +41328,8 @@ body.od-admin-shell select,
 body.od-admin-shell select option,
 body.od-admin-shell select optgroup {
   color-scheme: dark !important;
-  background-color: #0b1220 !important;
-  color: #f8fafc !important;
+  background-color: var(--od-admin-panel-soft) !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell select option:checked,
@@ -41308,7 +41347,7 @@ body.od-admin-shell .memory-sort-select {
   padding: 0 28px 0 12px !important;
   border: 1px solid rgba(71, 85, 105, 0.88) !important;
   border-radius: 10px !important;
-  background-color: #080f1d !important;
+  background-color: var(--od-admin-panel-deep) !important;
   color: #dbeafe !important;
   font-weight: 800 !important;
   box-shadow: none !important;
@@ -41322,15 +41361,15 @@ body.od-admin-shell #adm-epLocalType {
 
 body.od-admin-shell #skills-sort.memory-sort-select:focus,
 body.od-admin-shell .memory-sort-select:focus {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow: 0 0 0 3px rgba(70, 95, 255, 0.16) !important;
 }
 
 body.od-admin-shell .adm-provider-btn {
   min-height: 32px !important;
   border-color: rgba(71, 85, 105, 0.88) !important;
-  background: #080f1d !important;
-  color: #f8fafc !important;
+  background: var(--od-admin-panel-deep) !important;
+  color: var(--od-admin-text) !important;
   border-radius: 10px !important;
   font-weight: 800 !important;
 }
@@ -41343,20 +41382,20 @@ body.od-admin-shell .adm-provider-combo .adm-provider-btn {
 
 body.od-admin-shell .adm-provider-btn:hover,
 body.od-admin-shell .adm-provider-picker:has(.adm-provider-menu:not(.hidden)) .adm-provider-btn {
-  border-color: #465fff !important;
-  background: #111827 !important;
+  border-color: var(--od-admin-blue) !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell .adm-section-collapse-btn {
   border-color: rgba(71, 85, 105, 0.78) !important;
-  background: #080f1d !important;
+  background: var(--od-admin-panel-deep) !important;
   color: #dbeafe !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02) !important;
 }
 
 body.od-admin-shell .adm-section-collapse-btn:hover {
-  border-color: #465fff !important;
-  background: #111827 !important;
+  border-color: var(--od-admin-blue) !important;
+  background: var(--od-admin-panel) !important;
   color: #ffffff !important;
 }
 
@@ -41383,7 +41422,7 @@ body.od-admin-shell .adm-provider-item {
   padding: 5px 8px !important;
   gap: 10px !important;
   border-radius: 8px !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   font-weight: 800 !important;
 }
 
@@ -41419,7 +41458,7 @@ body.od-admin-shell .adm-provider-picker[data-provider-key="github"] .adm-provid
 body.od-admin-shell .adm-provider-item[data-provider-key="openrouter"] .adm-provider-logo,
 body.od-admin-shell .adm-provider-picker[data-provider-key="openrouter"] .adm-provider-current .adm-provider-logo { background: rgba(34, 211, 238, 0.16) !important; color: #22d3ee !important; }
 body.od-admin-shell .adm-provider-item[data-provider-key="ollama"] .adm-provider-logo,
-body.od-admin-shell .adm-provider-picker[data-provider-key="ollama"] .adm-provider-current .adm-provider-logo { background: rgba(248, 250, 252, 0.14) !important; color: #f8fafc !important; }
+body.od-admin-shell .adm-provider-picker[data-provider-key="ollama"] .adm-provider-current .adm-provider-logo { background: rgba(248, 250, 252, 0.14) !important; color: var(--od-admin-text) !important; }
 body.od-admin-shell .adm-provider-item[data-provider-key="groq"] .adm-provider-logo,
 body.od-admin-shell .adm-provider-picker[data-provider-key="groq"] .adm-provider-current .adm-provider-logo { background: rgba(245, 80, 54, 0.18) !important; color: #f55036 !important; }
 body.od-admin-shell .adm-provider-item[data-provider-key="mistral"] .adm-provider-logo,
@@ -41435,16 +41474,16 @@ body.od-admin-shell .adm-provider-picker[data-provider-key="together"] .adm-prov
 
 body.od-admin-shell #calendar-modal .modal-content,
 body.od-admin-shell #calendar-modal .calendar-modal-content {
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   border-color: rgba(52, 64, 84, 0.9) !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell #calendar-modal .cal-grid,
 body.od-admin-shell #calendar-modal .cal-day,
 body.od-admin-shell #calendar-modal .cal-agenda,
 body.od-admin-shell #calendar-modal .calendar-panel {
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   border-color: rgba(31, 41, 55, 0.92) !important;
 }
 
@@ -41533,7 +41572,7 @@ body.od-admin-shell .section-header-btn {
   padding: 0 9px !important;
   border-radius: 999px !important;
   border-color: rgba(71, 85, 105, 0.95) !important;
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   color: #ffffff !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02) !important;
 }
@@ -41551,14 +41590,14 @@ body.od-admin-shell .section-header-btn svg {
 body.od-admin-shell .list-item-plus-btn:hover,
 body.od-admin-shell .chats-manage-btn:hover,
 body.od-admin-shell .section-header-btn:hover {
-  background: #182230 !important;
-  border-color: #465fff !important;
+  background: var(--od-admin-panel-hover) !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
   box-shadow: 0 0 0 3px rgba(70,95,255,0.18) !important;
 }
 
 body.od-admin-shell .vis-row {
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   border-color: rgba(52, 64, 84, 0.86) !important;
 }
 
@@ -41607,7 +41646,7 @@ body.od-admin-shell.doc-view .doc-editor-pane:has(#doc-email-richbody) {
   height: auto !important;
   max-height: none !important;
   transform: none !important;
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   border: 1px solid rgba(52, 64, 84, 0.9) !important;
   border-radius: 18px !important;
   box-shadow: 0 28px 72px rgba(0, 0, 0, 0.58) !important;
@@ -41618,7 +41657,7 @@ body.od-admin-shell.doc-view .doc-editor-pane:has(#doc-email-header) .doc-tab-ba
 body.od-admin-shell.doc-view .doc-editor-pane:has(#doc-email-header) .doc-editor-header,
 body.od-admin-shell.doc-view .doc-editor-pane:has(#doc-email-header) .doc-md-toolbar,
 body.od-admin-shell.doc-view .doc-editor-pane:has(#doc-email-header) #doc-email-header {
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   border-color: rgba(52, 64, 84, 0.86) !important;
 }
 
@@ -41636,13 +41675,13 @@ body.od-admin-shell .doc-email-richbody {
 }
 
 body.od-admin-shell .doc-email-richbody {
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   color: #ffffff !important;
 }
 
 body.od-admin-shell .email-field input {
   color: #ffffff !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
 }
 
 @media (min-width: 1100px) {
@@ -41835,9 +41874,9 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view .email-reminder-toggl
 
 body.od-admin-shell #email-lib-modal.cybervault-route-view > .doclib-modal-content,
 body.od-admin-shell #email-lib-modal.cybervault-route-view > .modal-content {
-  background: #111827 !important;
-  color: #f8fafc !important;
-  border-color: #1f2937 !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text) !important;
+  border-color: var(--od-admin-border) !important;
   overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
@@ -41848,8 +41887,8 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view .modal-header {
   min-height: 66px !important;
   margin: 0 !important;
   padding: 0 20px !important;
-  border-bottom: 1px solid #1f2937 !important;
-  background: #111827 !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell #email-lib-modal.cybervault-route-view .modal-body {
@@ -41867,7 +41906,7 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view .admin-card {
   gap: 12px !important;
   border: 1px solid #24324d !important;
   border-radius: 12px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   overflow: hidden !important;
 }
 
@@ -41921,9 +41960,9 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view #email-lib-folder {
   max-width: 320px !important;
   height: 32px !important;
   top: 0 !important;
-  border-color: #344054 !important;
+  border-color: var(--od-admin-border-strong) !important;
   border-radius: 10px !important;
-  background-color: #080f1d !important;
+  background-color: var(--od-admin-panel-deep) !important;
   color: #dbeafe !important;
 }
 
@@ -41948,18 +41987,18 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view .email-search-wrap {
   align-items: center !important;
   gap: 6px !important;
   padding: 2px 4px !important;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 12px !important;
-  background: #080f1d !important;
+  background: var(--od-admin-panel-deep) !important;
   overflow: hidden !important;
 }
 
 body.od-admin-shell #email-lib-modal.cybervault-route-view #email-filter-btn {
   height: 32px !important;
   top: 0 !important;
-  border-color: #344054 !important;
+  border-color: var(--od-admin-border-strong) !important;
   border-radius: 10px !important;
-  background: #080f1d !important;
+  background: var(--od-admin-panel-deep) !important;
   color: #e5e7eb !important;
 }
 
@@ -41968,7 +42007,7 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view #email-lib-search {
   flex: 1 1 auto !important;
   min-width: 0 !important;
   padding-right: 12px !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell #email-lib-modal.cybervault-route-view .doclib-grid {
@@ -41977,7 +42016,7 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view .doclib-grid {
   max-height: none !important;
   overflow-y: auto !important;
   border-radius: 12px !important;
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell #email-lib-modal.cybervault-route-view #email-lib-select-btn,
@@ -41987,9 +42026,9 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view #email-undone-btn,
 body.od-admin-shell #email-lib-modal.cybervault-route-view #email-attach-btn {
   top: 0 !important;
   min-height: 32px !important;
-  border-color: #344054 !important;
+  border-color: var(--od-admin-border-strong) !important;
   border-radius: 10px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: #dbeafe !important;
 }
 
@@ -42012,8 +42051,8 @@ body.od-admin-shell #email-lib-modal.cybervault-route-view .email-attach-toggle-
   transform: none !important;
   flex: 0 0 36px !important;
   opacity: 1 !important;
-  border: 1px solid #344054 !important;
-  background: #0b1220 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
+  background: var(--od-admin-panel-soft) !important;
 }
 
 body.od-admin-shell #email-lib-modal.cybervault-route-view #email-lib-refresh-btn svg {
@@ -42084,7 +42123,7 @@ body.od-admin-shell .modal.cybervault-route-view {
   padding: 0 !important;
   align-items: stretch !important;
   justify-content: stretch !important;
-  background: #030712 !important;
+  background: var(--od-admin-sidebar) !important;
   backdrop-filter: none !important;
 }
 
@@ -42106,7 +42145,7 @@ body.od-admin-shell #notes-pane-backdrop.notes-route-view.cybervault-route-view 
   height: 100vh !important;
   height: 100dvh !important;
   padding: 0 !important;
-  background: #030712 !important;
+  background: var(--od-admin-sidebar) !important;
   backdrop-filter: none !important;
   z-index: 240 !important;
 }
@@ -42200,9 +42239,9 @@ body.od-admin-shell .modal-header .modal-close {
   max-width: 30px !important;
   height: 30px !important;
   padding: 0 !important;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 8px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: transparent !important;
   overflow: hidden !important;
   align-items: center !important;
@@ -42212,7 +42251,7 @@ body.od-admin-shell .modal-header .modal-close {
 body.od-admin-shell .modal-header .close-btn::before,
 body.od-admin-shell .modal-header .modal-close::before {
   content: "X" !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif !important;
   font-size: 14px !important;
   font-weight: 900 !important;
@@ -42223,13 +42262,13 @@ body.od-admin-shell .modal-header .modal-close::before {
 
 body.od-admin-shell .modal-header .close-btn:hover,
 body.od-admin-shell .modal-header .modal-close:hover {
-  border-color: #5f73ff !important;
-  background: #182230 !important;
+  border-color: var(--od-admin-blue-hover) !important;
+  background: var(--od-admin-panel-hover) !important;
 }
 
 body.od-admin-shell select {
   color-scheme: dark !important;
-  accent-color: #465fff !important;
+  accent-color: var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell select option,
@@ -42246,8 +42285,8 @@ body.od-admin-shell select option:checked {
 
 body.od-admin-shell select option:hover,
 body.od-admin-shell select option:focus {
-  background: linear-gradient(0deg, #182230, #182230) !important;
-  box-shadow: 0 0 0 999px #182230 inset !important;
+  background: linear-gradient(0deg, var(--od-admin-panel-hover), var(--od-admin-panel-hover)) !important;
+  box-shadow: 0 0 0 999px var(--od-admin-panel-hover) inset !important;
   color: #ffffff !important;
 }
 
@@ -42259,10 +42298,10 @@ body.od-admin-shell .overflow-menu,
 body.od-admin-shell .export-dropdown,
 body.od-admin-shell .email-more-menu {
   background: #050a13 !important;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 12px !important;
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.58) !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   padding: 8px !important;
 }
 
@@ -42280,7 +42319,7 @@ body.od-admin-shell .overflow-menu-item {
   gap: 10px !important;
   border-radius: 9px !important;
   background: transparent !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   font-weight: 700 !important;
   opacity: 1 !important;
 }
@@ -42326,7 +42365,7 @@ body.od-admin-shell .sidebar-inner #sidebar-search-btn.active,
 body.od-admin-shell .sidebar-inner #sidebar-search-btn[aria-current="page"] {
   background: #172042 !important;
   color: #ffffff !important;
-  box-shadow: inset 3px 0 0 #465fff !important;
+  box-shadow: inset 3px 0 0 var(--od-admin-blue) !important;
 }
 
 body.od-admin-shell .sidebar-inner #sidebar-search-btn.active svg,
@@ -42341,7 +42380,7 @@ body.od-admin-shell .sidebar-inner #sidebar-new-chat-btn {
 body.od-admin-shell #sidebar-new-chat-btn,
 body.od-admin-shell #sidebar-new-chat-btn.active,
 body.od-admin-shell #sidebar-new-chat-btn[aria-current="page"] {
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   border: 1px solid #26395b !important;
   color: #e5edf8 !important;
   box-shadow: none !important;
@@ -42358,7 +42397,7 @@ body.od-admin-shell #sidebar-new-chat-btn:active {
 }
 
 body.od-admin-shell #calendar-modal .modal-content {
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell #calendar-modal .cal-toolbar,
@@ -42367,9 +42406,9 @@ body.od-admin-shell #calendar-modal .cal-settings-panel,
 body.od-admin-shell #calendar-modal .calendar-settings-panel,
 body.od-admin-shell #calendar-modal .cal-settings-card,
 body.od-admin-shell #calendar-modal .admin-card {
-  background: #111827 !important;
-  border-color: #1f2937 !important;
-  color: #f8fafc !important;
+  background: var(--od-admin-panel) !important;
+  border-color: var(--od-admin-border) !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell #calendar-modal .cal-nav,
@@ -42380,9 +42419,9 @@ body.od-admin-shell #calendar-modal .cal-view-btn,
 body.od-admin-shell #calendar-modal .memory-toolbar-btn,
 body.od-admin-shell #calendar-modal button:not(.close-btn):not(.modal-close) {
   min-height: 30px !important;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 8px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: #dbeafe !important;
   font-weight: 800 !important;
 }
@@ -42393,7 +42432,7 @@ body.od-admin-shell #calendar-modal .cal-add-btn:hover,
 body.od-admin-shell #calendar-modal .cal-add-btn-text:hover,
 body.od-admin-shell #calendar-modal .cal-filter-toggle:hover,
 body.od-admin-shell #calendar-modal .memory-toolbar-btn:hover {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   background: #172042 !important;
   color: #ffffff !important;
 }
@@ -42403,18 +42442,18 @@ body.od-admin-shell #calendar-modal .cal-input,
 body.od-admin-shell #calendar-modal input,
 body.od-admin-shell #calendar-modal textarea,
 body.od-admin-shell #calendar-modal select {
-  border-color: #344054 !important;
+  border-color: var(--od-admin-border-strong) !important;
   border-radius: 10px !important;
-  background: #080f1d !important;
-  color: #f8fafc !important;
+  background: var(--od-admin-panel-deep) !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell #calendar-modal .cal-s-color {
   width: 28px !important;
   height: 28px !important;
-  border: 1px solid #344054 !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
   border-radius: 9px !important;
-  background: #080f1d !important;
+  background: var(--od-admin-panel-deep) !important;
 }
 
 body.od-admin-shell #calendar-modal.cybervault-route-view > .modal-content.cal-modal-content,
@@ -42433,7 +42472,7 @@ body.od-admin-shell #doclib-modal.cybervault-route-view > .doclib-modal-content 
   max-height: calc(100dvh - 32px) !important;
   border: 1px solid #1f2a44 !important;
   border-radius: 14px !important;
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.32) !important;
   display: flex !important;
   flex-direction: column !important;
@@ -42445,16 +42484,16 @@ body.od-admin-shell #doclib-modal.cybervault-route-view .modal-header {
   min-height: 58px !important;
   margin: 0 !important;
   padding: 14px 20px !important;
-  border-bottom: 1px solid #1f2937 !important;
-  background: #111827 !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
+  background: var(--od-admin-panel) !important;
 }
 
 body.od-admin-shell #doclib-modal.cybervault-route-view .lib-tabs {
   flex: 0 0 auto !important;
   margin: 0 !important;
   padding: 12px 20px !important;
-  border-bottom: 1px solid #1f2937 !important;
-  background: #111827 !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
+  background: var(--od-admin-panel) !important;
   gap: 12px !important;
   overflow-x: auto !important;
 }
@@ -42477,7 +42516,7 @@ body.od-admin-shell #doclib-modal.cybervault-route-view .admin-card {
   padding: 12px !important;
   border: 1px solid #24324d !important;
   border-radius: 12px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   overflow: hidden !important;
 }
 
@@ -42573,7 +42612,7 @@ body.od-admin-shell #doclib-modal.cybervault-route-view [data-doclib-panel="docu
 body.od-admin-shell #doclib-modal.cybervault-route-view .doclib-card {
   min-height: 52px !important;
   border-color: #1f2a44 !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
 }
 
 body.od-admin-shell #doclib-modal.cybervault-route-view :is(.memory-toolbar-btn, .doclib-toolbar-btn),
@@ -42740,7 +42779,7 @@ body.od-admin-shell .chat-container.chat-flow-active .msg {
   background:
     linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0)),
     #101827 !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22) !important;
   overflow: visible !important;
 }
@@ -42783,7 +42822,7 @@ body.od-admin-shell .chat-container.chat-flow-active .msg-user .role {
 }
 
 body.od-admin-shell .chat-container.chat-flow-active .msg .body {
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
   font-size: 14px !important;
   line-height: 1.58 !important;
   overflow: visible !important;
@@ -42847,7 +42886,7 @@ body.od-admin-shell .modal-header .modal-close {
   padding: 0 !important;
   border: 1px solid #28405f !important;
   border-radius: 8px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: #e5edf8 !important;
   font-size: 0 !important;
   justify-content: center !important;
@@ -42929,8 +42968,8 @@ body.od-admin-shell .chat-input-right > .model-picker-wrap .model-picker-btn {
   border: 1px solid #2f4468 !important;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0)),
-    #0b1220 !important;
-  color: #f8fafc !important;
+    var(--od-admin-panel-soft) !important;
+  color: var(--od-admin-text) !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025), 0 6px 18px rgba(0,0,0,0.22) !important;
   font-size: 12px !important;
   line-height: 34px !important;
@@ -43027,7 +43066,7 @@ body.od-admin-shell .model-picker-menu {
   background:
     radial-gradient(circle at 18% 0%, rgba(70, 95, 255, 0.16), transparent 38%),
     linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
-    #0b1220 !important;
+    var(--od-admin-panel-soft) !important;
   box-shadow: 0 22px 70px rgba(0,0,0,0.52), 0 0 0 1px rgba(110,231,255,0.06) !important;
   transform-origin: bottom right !important;
 }
@@ -43049,7 +43088,7 @@ body.od-admin-shell .model-picker-search-row {
 body.od-admin-shell .model-picker-menu input[type="text"] {
   height: 36px !important;
   border-radius: 10px !important;
-  border-color: #30476e !important;
+  border-color: var(--od-admin-border-accent) !important;
   background: #07101f !important;
   color: #e5edf8 !important;
   padding: 8px 34px 8px 11px !important;
@@ -43057,7 +43096,7 @@ body.od-admin-shell .model-picker-menu input[type="text"] {
 }
 
 body.od-admin-shell .model-picker-menu input[type="text"]:focus {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow: 0 0 0 3px rgba(70,95,255,0.24), inset 0 0 0 1px rgba(255,255,255,0.04) !important;
 }
 
@@ -43065,13 +43104,13 @@ body.od-admin-shell .model-picker-action-btn {
   width: 34px !important;
   height: 34px !important;
   border-radius: 10px !important;
-  border-color: #30476e !important;
+  border-color: var(--od-admin-border-accent) !important;
   background: linear-gradient(180deg, #17233a, #0f1a2c) !important;
   color: #6ee7ff !important;
 }
 
 body.od-admin-shell .model-picker-list {
-  max-height: min(320px, 44dvh) !important;
+  max-height: min(420px, 58dvh) !important;
   padding-right: 2px !important;
 }
 
@@ -43108,6 +43147,16 @@ body.od-admin-shell .model-picker-list .provider-logo svg {
   opacity: 1 !important;
 }
 
+body.od-admin-shell .model-picker-logo img,
+body.od-admin-shell .model-picker-list .provider-logo img,
+body.od-admin-shell .adm-provider-logo img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  border-radius: inherit !important;
+}
+
 body.od-admin-shell .model-picker-logo.provider-openai,
 body.od-admin-shell .provider-logo.provider-openai { background: rgba(16,163,127,0.18) !important; color: #10a37f !important; }
 body.od-admin-shell .model-picker-logo.provider-anthropic,
@@ -43136,6 +43185,10 @@ body.od-admin-shell .model-picker-list .model-switch-chatgpt-tier {
   grid-template-columns: auto minmax(0, 1fr) auto auto !important;
 }
 
+body.od-admin-shell .model-picker-list .model-switch-claude-tier {
+  min-height: 38px !important;
+}
+
 body.od-admin-shell .model-picker-list .provider-logo.model-tier-logo {
   width: 31px !important;
   height: 24px !important;
@@ -43146,7 +43199,7 @@ body.od-admin-shell .model-picker-list .provider-logo.model-tier-logo {
   letter-spacing: -0.12em !important;
   background: rgba(70, 95, 255, 0.12) !important;
   box-shadow: inset 0 0 0 1px rgba(110, 231, 255, 0.13), 0 0 14px rgba(70, 95, 255, 0.12) !important;
-  color: #f8fafc !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell .model-picker-list .model-switch-tier-mini .model-tier-logo { background: rgba(250, 204, 21, 0.15) !important; }
@@ -43161,6 +43214,21 @@ body.od-admin-shell .model-picker-list .model-switch-chatgpt-tier .model-switch-
   color: #a9c4df !important;
   font-weight: 700 !important;
   opacity: 1 !important;
+}
+
+body.od-admin-shell .model-picker-list .model-switch-claude-tier .model-switch-ep {
+  color: #9bd9ff !important;
+  font-weight: 700 !important;
+  opacity: 0.95 !important;
+}
+
+body.od-admin-shell .model-picker-list .provider-logo.model-claude-logo,
+body.od-admin-shell .model-picker-logo.model-claude-logo {
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  color: #ff9f45 !important;
+  box-shadow: none !important;
 }
 
 body.od-admin-shell .model-picker-list .mp-fav-dot {
@@ -43230,7 +43298,7 @@ body.od-admin-shell #styled-confirm-overlay .styled-confirm-box {
   background:
     radial-gradient(circle at 20% 0%, rgba(70, 95, 255, 0.18), transparent 38%),
     linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
-    #111827 !important;
+    var(--od-admin-panel) !important;
   box-shadow: 0 28px 90px rgba(0,0,0,0.62), 0 0 0 1px rgba(110,231,255,0.06) inset !important;
   color: #e5edf8 !important;
   padding: 0 !important;
@@ -43290,7 +43358,7 @@ body.od-admin-shell #styled-confirm-overlay .confirm-btn-secondary:hover {
 
 body.od-admin-shell #styled-confirm-overlay .confirm-btn-danger,
 body.od-admin-shell #styled-confirm-overlay .confirm-btn-primary {
-  background: linear-gradient(135deg, #465fff, #273fd3) !important;
+  background: linear-gradient(135deg, var(--od-admin-blue), #273fd3) !important;
   border-color: #6b7cff !important;
   color: #ffffff !important;
 }
@@ -43315,7 +43383,7 @@ body.od-admin-shell #toast {
   border: 1px solid #26395b !important;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
-    #0b1220 !important;
+    var(--od-admin-panel-soft) !important;
   color: #a8f3ff !important;
   box-shadow: 0 18px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(70,95,255,0.18) inset !important;
   font-weight: 700 !important;
@@ -43357,7 +43425,7 @@ body.od-admin-shell .icon-rail-btn svg {
 }
 
 body.od-admin-shell #rail-search-btn svg { color: #60a5fa !important; }
-body.od-admin-shell #rail-new-session svg { color: #465fff !important; }
+body.od-admin-shell #rail-new-session svg { color: var(--od-admin-blue) !important; }
 body.od-admin-shell #rail-delete-session svg { color: #fb7185 !important; }
 body.od-admin-shell #rail-calendar svg { color: #f59e0b !important; }
 body.od-admin-shell #rail-compare svg { color: #a78bfa !important; }
@@ -43372,7 +43440,7 @@ body.od-admin-shell #rail-tasks svg { color: #10b981 !important; }
 body.od-admin-shell #rail-memory svg { color: #818cf8 !important; }
 body.od-admin-shell #rail-theme svg { color: #f472b6 !important; }
 body.od-admin-shell #rail-settings svg,
-body.od-admin-shell #rail-admin svg { color: #94a3b8 !important; }
+body.od-admin-shell #rail-admin svg { color: var(--od-admin-muted) !important; }
 
 /* CyberVault sidebar: New Chat is an action, not a selected tab. */
 body.od-admin-shell #sidebar .sidebar-inner #sidebar-new-chat-btn,
@@ -43397,7 +43465,7 @@ body.od-admin-shell #sidebar .sidebar-inner #sidebar-new-chat-btn::after {
 }
 
 body.od-admin-shell #sidebar .sidebar-inner #sidebar-new-chat-btn .sidebar-action-icon {
-  color: #465fff !important;
+  color: var(--od-admin-blue) !important;
 }
 
 /* CyberVault sidebar: default rows stay quiet; hover gives the only highlight. */
@@ -43477,7 +43545,7 @@ body.od-admin-shell.hamburger-only .hamburger-btn {
   z-index: 10020 !important;
   border: 1px solid #26395b !important;
   border-radius: 10px !important;
-  background: #0b1220 !important;
+  background: var(--od-admin-panel-soft) !important;
   color: #e5edf8 !important;
   box-shadow: none !important;
 }
@@ -43575,6 +43643,251 @@ body.od-admin-shell .model-picker-logo.model-tier-advanced-logo {
   letter-spacing: 0 !important;
 }
 
+/* Provider-aware chat composer controls. */
+body.od-admin-shell .provider-control-wrap,
+body.od-admin-shell .chat-timer-wrap {
+  position: relative !important;
+  flex: 0 0 auto !important;
+}
+
+body.od-admin-shell .provider-control-wrap.hidden {
+  display: none !important;
+}
+
+body.od-admin-shell .provider-control-btn,
+body.od-admin-shell .chat-timer-btn {
+  height: 36px !important;
+  min-width: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 0 12px !important;
+  border-radius: 18px !important;
+  border: 1px solid #2d4269 !important;
+  background:
+    radial-gradient(circle at 22% 0%, rgba(88, 119, 255, 0.16), transparent 42%),
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)),
+    var(--od-admin-panel-soft) !important;
+  color: #edf5ff !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.055) !important;
+  cursor: pointer !important;
+}
+
+body.od-admin-shell .provider-control-btn:hover,
+body.od-admin-shell .chat-timer-btn:hover,
+body.od-admin-shell .provider-control-btn[aria-expanded="true"],
+body.od-admin-shell .chat-timer-btn[aria-expanded="true"] {
+  border-color: #3a4a67 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+
+body.od-admin-shell .provider-control-icon {
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 20px !important;
+}
+
+body.od-admin-shell .provider-openai-glyph,
+body.od-admin-shell .provider-default-glyph {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #10a37f !important;
+  color: #031411 !important;
+  font-size: 8px !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.04em !important;
+}
+
+body.od-admin-shell .provider-control-icon .provider-logo-img {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-bar[data-provider-brand="openai"] {
+  --provider-accent: #10a37f;
+  border-color: var(--od-admin-border) !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-bar[data-provider-brand="anthropic"] {
+  --provider-accent: #ff7a1a;
+  border-color: var(--od-admin-border) !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .provider-control-menu,
+body.od-admin-shell .chat-timer-menu {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: calc(100% + 10px) !important;
+  z-index: 9000 !important;
+  width: min(320px, calc(100vw - 28px)) !important;
+  padding: 8px !important;
+  border: 1px solid #2b4168 !important;
+  border-radius: 16px !important;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(70, 95, 255, 0.18), transparent 48%),
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+    var(--od-admin-panel-soft) !important;
+  box-shadow: 0 -24px 70px rgba(0,0,0,0.64), inset 0 1px 0 rgba(255,255,255,0.055) !important;
+  color: #eaf3ff !important;
+}
+
+body.od-admin-shell .provider-control-menu.hidden,
+body.od-admin-shell .chat-timer-menu.hidden {
+  display: none !important;
+}
+
+body.od-admin-shell .provider-menu-title {
+  padding: 4px 8px 8px !important;
+  color: #89ecff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+body.od-admin-shell .provider-menu-item {
+  width: 100% !important;
+  min-height: 48px !important;
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 10px !important;
+  margin: 2px 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  background: transparent !important;
+  color: #eaf3ff !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+body.od-admin-shell .provider-menu-item:hover,
+body.od-admin-shell .provider-menu-item:focus-visible {
+  border-color: rgba(82,109,255,0.55) !important;
+  background: rgba(70, 95, 255, 0.16) !important;
+}
+
+body.od-admin-shell .provider-menu-item.active:not(:hover):not(:focus-visible) {
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+body.od-admin-shell .provider-menu-icon {
+  width: 28px !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+  background: rgba(82,109,255,0.14) !important;
+  color: var(--provider-accent, #6ee7ff) !important;
+  font-size: 16px !important;
+}
+
+body.od-admin-shell .provider-menu-item strong {
+  display: block !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  line-height: 1.15 !important;
+}
+
+body.od-admin-shell .provider-menu-item small {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #91a3bd !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+}
+
+body.od-admin-shell .provider-menu-check {
+  color: #63f6ff !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+body.od-admin-shell .provider-toggle-track {
+  width: 34px !important;
+  height: 20px !important;
+  border-radius: 999px !important;
+  background: rgba(148, 163, 184, 0.22) !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
+  padding: 2px !important;
+}
+
+body.od-admin-shell .provider-toggle-track span {
+  display: block !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background: var(--od-admin-muted) !important;
+  transition: transform 0.18s ease, background 0.18s ease !important;
+}
+
+body.od-admin-shell .provider-thinking-toggle.active .provider-toggle-track {
+  background: rgba(255, 122, 26, 0.24) !important;
+  border-color: rgba(255, 122, 26, 0.5) !important;
+}
+
+body.od-admin-shell .provider-thinking-toggle.active .provider-toggle-track span {
+  transform: translateX(14px) !important;
+  background: #ff9f45 !important;
+}
+
+body.od-admin-shell .chat-timer-btn.timer-armed {
+  border-color: #2d4269 !important;
+  color: #eaf3ff !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.055) !important;
+}
+
+body.od-admin-shell .chat-container.cv-chat-expiring .chat-history .msg,
+body.od-admin-shell .chat-container.cv-chat-expiring .agent-thread,
+body.od-admin-shell .chat-container.cv-chat-expiring .chat-input-bar {
+  animation: cvTimedChatDelete 1.5s ease-in forwards !important;
+}
+
+@keyframes cvTimedChatDelete {
+  0% { opacity: 1; filter: blur(0) saturate(1); transform: translateY(0); }
+  45% { opacity: 0.72; filter: blur(1.5px) saturate(1.35); transform: translateY(-1px); }
+  100% { opacity: 0; filter: blur(12px) saturate(0.5); transform: translateY(10px) scale(0.982); }
+}
+
+body.od-admin-shell .model-picker-list .model-switch-claude-tier {
+  border-radius: 14px !important;
+  padding: 8px 10px !important;
+  margin: 3px 0 !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+}
+
+body.od-admin-shell .model-picker-list .model-switch-claude-tier:hover {
+  border-color: rgba(82, 109, 255, 0.36) !important;
+  background: rgba(70, 95, 255, 0.14) !important;
+}
+
+body.od-admin-shell .model-picker-list .provider-logo.model-claude-logo,
+body.od-admin-shell .model-picker-logo.model-claude-logo {
+  width: 26px !important;
+  height: 26px !important;
+  flex-basis: 26px !important;
+  border-radius: 50% !important;
+}
+
 /* CyberVault chat chrome: retire old flat popups/outputs in favor of the app shell. */
 body.od-admin-shell .ctx-popup,
 body.od-admin-shell .ctx-detail-popup,
@@ -43585,7 +43898,7 @@ body.od-admin-shell .msg-overflow-menu {
   background:
     radial-gradient(circle at 16% 0%, rgba(70, 95, 255, 0.13), transparent 42%),
     linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.014)),
-    #0b1220 !important;
+    var(--od-admin-panel-soft) !important;
   color: #e5edf8 !important;
   box-shadow:
     0 22px 70px rgba(0,0,0,0.56),
@@ -43644,13 +43957,13 @@ body.od-admin-shell .ctx-bar-fill {
 body.od-admin-shell .ctx-compact-btn {
   min-height: 32px !important;
   border-radius: 10px !important;
-  border-color: #30476e !important;
+  border-color: var(--od-admin-border-accent) !important;
   background: linear-gradient(180deg, #17233a, #0f1a2c) !important;
   color: #a8ecff !important;
 }
 
 body.od-admin-shell .ctx-compact-btn:hover {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   color: #ffffff !important;
   background: linear-gradient(180deg, #243465, #15213b) !important;
 }
@@ -43661,7 +43974,7 @@ body.od-admin-shell .sources-section {
   border-radius: 12px !important;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008)),
-    #0b1220 !important;
+    var(--od-admin-panel-soft) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.035) !important;
   overflow: hidden !important;
 }
@@ -43707,7 +44020,7 @@ body.od-admin-shell .source-link {
 }
 
 body.od-admin-shell .source-link:hover {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   background: #162541 !important;
 }
 
@@ -43766,7 +44079,7 @@ body.od-admin-shell .msg-more-btn {
 body.od-admin-shell .msg-more-btn:hover,
 body.od-admin-shell .msg-more-btn:focus-visible {
   color: #a8ecff !important;
-  border-color: #30476e !important;
+  border-color: var(--od-admin-border-accent) !important;
   background: rgba(70,95,255,0.12) !important;
 }
 
@@ -43796,7 +44109,7 @@ body.od-admin-shell .chat-container.chat-flow-active .agent-thread .body a {
 body.od-admin-shell .msg-edit-textarea,
 body.od-admin-shell .edit-textarea {
   min-height: 220px !important;
-  border: 1px solid #30476e !important;
+  border: 1px solid var(--od-admin-border-accent) !important;
   border-radius: 12px !important;
   background: #07101f !important;
   color: #f4f7fb !important;
@@ -43808,7 +44121,7 @@ body.od-admin-shell .edit-textarea {
 body.od-admin-shell .msg-edit-textarea:focus,
 body.od-admin-shell .edit-textarea:focus {
   outline: none !important;
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow: 0 0 0 3px rgba(70,95,255,0.26), inset 0 0 0 1px rgba(255,255,255,0.035) !important;
 }
 
@@ -43824,7 +44137,7 @@ body.od-admin-shell .edit-cancel-btn {
   min-height: 34px !important;
   padding: 7px 14px !important;
   border-radius: 9px !important;
-  border-color: #30476e !important;
+  border-color: var(--od-admin-border-accent) !important;
   background: #111a2b !important;
   color: #a8ecff !important;
   font-weight: 650 !important;
@@ -43853,8 +44166,29 @@ body.od-admin-shell[data-cybervault-route="/dashboard"] .chat-top-bar,
 body.od-admin-shell[data-cybervault-route="/dashboard"] #welcome-screen,
 body.od-admin-shell[data-cybervault-route="/dashboard"] #chat-history,
 body.od-admin-shell[data-cybervault-route="/dashboard"] #attach-strip,
-body.od-admin-shell[data-cybervault-route="/dashboard"] .chat-input-bar {
+body.od-admin-shell[data-cybervault-route="/dashboard"] .chat-input-bar,
+body.od-admin-shell[data-cybervault-route="/dashboard"] .chat-input-external-controls,
+body.od-admin-shell.cybervault-dashboard-route .chat-top-bar,
+body.od-admin-shell.cybervault-dashboard-route #welcome-screen,
+body.od-admin-shell.cybervault-dashboard-route #chat-history,
+body.od-admin-shell.cybervault-dashboard-route #attach-strip,
+body.od-admin-shell.cybervault-dashboard-route .chat-input-bar,
+body.od-admin-shell.cybervault-dashboard-route .chat-input-external-controls {
   display: none !important;
+}
+
+/* Dashboard composer hard hide: this shared New Chat composer must not appear on Dashboard. */
+body.od-admin-shell[data-cybervault-route="/dashboard"] .chat-input-bar.dashboard-panel,
+body.od-admin-shell[data-cybervault-route="/dashboard"] .chat-input-external-controls,
+body.od-admin-shell[data-cybervault-route="/dashboard"] #attach-strip,
+body.od-admin-shell[data-cybervault-route="/dashboard"] #scroll-bottom-btn,
+body.od-admin-shell.cybervault-dashboard-route .chat-input-bar.dashboard-panel,
+body.od-admin-shell.cybervault-dashboard-route .chat-input-external-controls,
+body.od-admin-shell.cybervault-dashboard-route #attach-strip,
+body.od-admin-shell.cybervault-dashboard-route #scroll-bottom-btn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 body.od-admin-shell:not([data-cybervault-route="/dashboard"]) .cybervault-dashboard-page {
@@ -43874,7 +44208,7 @@ body.od-admin-shell .cybervault-dashboard-page {
   grid-template-rows: auto minmax(0, 1fr) !important;
   align-items: center !important;
   gap: clamp(34px, 7vh, 74px) !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell .cybervault-dashboard-stats {
@@ -43891,7 +44225,7 @@ body.od-admin-shell .cybervault-dashboard-card {
   border-radius: 16px !important;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
-    #111827 !important;
+    var(--od-admin-panel) !important;
   box-shadow: 0 20px 56px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.04) !important;
   overflow: hidden !important;
 }
@@ -44014,7 +44348,7 @@ body.od-admin-shell .cybervault-dashboard-search {
   align-items: center !important;
   gap: 12px !important;
   padding: 0 18px !important;
-  border: 1px solid #30476e !important;
+  border: 1px solid var(--od-admin-border-accent) !important;
   border-radius: 16px !important;
   background: #07101f !important;
   color: #9fb2cc !important;
@@ -44022,7 +44356,7 @@ body.od-admin-shell .cybervault-dashboard-search {
 }
 
 body.od-admin-shell .cybervault-dashboard-search:focus-within {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow: 0 0 0 3px rgba(70,95,255,0.22), 0 20px 60px rgba(0,0,0,0.28) !important;
 }
 
@@ -44033,7 +44367,7 @@ body.od-admin-shell .cybervault-dashboard-search input {
   border: 0 !important;
   outline: 0 !important;
   background: transparent !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
   font-size: 16px !important;
 }
 
@@ -44048,7 +44382,7 @@ body.od-admin-shell #dashboard-page-search-results.cybervault-dashboard-search-r
   max-height: min(390px, 40vh) !important;
   margin: 2px auto 0 !important;
   padding: 10px !important;
-  border: 1px solid #30476e !important;
+  border: 1px solid var(--od-admin-border-accent) !important;
   border-radius: 16px !important;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)),
@@ -44080,7 +44414,7 @@ body.od-admin-shell #dashboard-page-search-results .search-result-item {
   padding: 9px 10px !important;
   border: 1px solid transparent !important;
   border-radius: 12px !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell #dashboard-page-search-results .search-result-item:hover,
@@ -44134,8 +44468,8 @@ body.od-admin-shell #research-overlay.cybervault-route-view .modal-content,
 body.od-admin-shell #research-overlay.cybervault-route-view .research-pane,
 body.od-admin-shell #email-lib-modal.email-lib-fullscreen .modal-content,
 body.od-admin-shell #email-lib-modal.email-lib-fullscreen .doclib-modal-content {
-  background: #111827 !important;
-  color: #f9fafb !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text) !important;
   border-color: #223859 !important;
   box-shadow: none !important;
 }
@@ -44160,10 +44494,10 @@ body.od-admin-shell #email-lib-modal .email-filter-btn,
 body.od-admin-shell #email-lib-modal .memory-search,
 body.od-admin-shell #email-lib-modal .doclib-search {
   min-height: 38px !important;
-  border: 1px solid #30476e !important;
+  border: 1px solid var(--od-admin-border-accent) !important;
   border-radius: 12px !important;
   background: #07101f !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02) !important;
 }
 
@@ -44183,7 +44517,7 @@ body.od-admin-shell #research-overlay option,
 body.od-admin-shell #email-lib-modal option,
 body.od-admin-shell .cybervault-dashboard-page option {
   background: #07101f !important;
-  color: #f9fafb !important;
+  color: var(--od-admin-text) !important;
 }
 
 body.od-admin-shell #research-overlay .research-query:focus,
@@ -44192,7 +44526,7 @@ body.od-admin-shell #email-lib-modal input:focus,
 body.od-admin-shell #email-lib-modal select:focus,
 body.od-admin-shell #email-lib-modal textarea:focus {
   outline: none !important;
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow: 0 0 0 3px rgba(70,95,255,0.22), inset 0 0 0 1px rgba(255,255,255,0.03) !important;
 }
 
@@ -44225,8 +44559,8 @@ body.od-admin-shell #research-overlay .research-controls-row {
 body.od-admin-shell #research-overlay .research-start-btn,
 body.od-admin-shell #email-lib-modal button:not(.modal-close-btn):not(.close-btn) {
   border-radius: 11px !important;
-  border: 1px solid #30476e !important;
-  background: #465fff !important;
+  border: 1px solid var(--od-admin-border-accent) !important;
+  background: var(--od-admin-blue) !important;
   color: #ffffff !important;
   font-weight: 800 !important;
 }
@@ -44286,7 +44620,7 @@ body.od-admin-shell #chats-library-btn.chats-manage-btn {
   justify-content: center !important;
   border-radius: 999px !important;
   border: 1px solid rgba(91, 141, 239, 0.58) !important;
-  background: #111827 !important;
+  background: var(--od-admin-panel) !important;
   color: #9ee9ff !important;
   opacity: 1 !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025) !important;
@@ -44333,7 +44667,7 @@ body.od-admin-shell .cybervault-dashboard-search {
 }
 
 body.od-admin-shell .cybervault-dashboard-search:focus-within {
-  border-color: #465fff !important;
+  border-color: var(--od-admin-blue) !important;
   box-shadow:
     0 0 0 2px rgba(70, 95, 255, 0.55),
     0 0 0 6px rgba(70, 95, 255, 0.11),
@@ -44435,4 +44769,1656 @@ body.od-admin-shell #dashboard-page-search-results .search-empty {
   border: 1px solid rgba(48, 71, 110, 0.46) !important;
   border-radius: 14px !important;
   background: rgba(15, 23, 42, 0.55) !important;
+}
+
+/* CyberVault chat code output repair: preserve code exactly and never clip it. */
+body.od-admin-shell .chat-container.chat-flow-active .msg,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body,
+body.od-admin-shell .chat-container.chat-flow-active .stream-content,
+body.od-admin-shell .chat-container.chat-flow-active .live-reply-content {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre,
+body.od-admin-shell .chat-container.chat-flow-active .agent-thread pre,
+body.od-admin-shell .msg .body pre {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  margin: 12px 0 !important;
+  padding: 16px 54px 16px 16px !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  white-space: pre !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  border: 1px solid #263d66 !important;
+  border-radius: 14px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.006)),
+    #050b16 !important;
+  color: #e7edf7 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.035) !important;
+  scrollbar-gutter: stable !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre code,
+body.od-admin-shell .chat-container.chat-flow-active .agent-thread pre code,
+body.od-admin-shell .msg .body pre code {
+  display: block !important;
+  width: max-content !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  white-space: pre !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  line-height: 1.55 !important;
+  tab-size: 2 !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: inherit !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.pre-compact,
+body.od-admin-shell .msg .body pre.pre-compact {
+  min-height: 42px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .copy-code,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .edit-code,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .run-code,
+body.od-admin-shell .msg .body pre .copy-code,
+body.od-admin-shell .msg .body pre .edit-code,
+body.od-admin-shell .msg .body pre .run-code {
+  position: absolute !important;
+  top: 10px !important;
+  z-index: 4 !important;
+  margin: 0 !important;
+  border: 1px solid var(--od-admin-border-accent) !important;
+  border-radius: 9px !important;
+  background: #0f1726 !important;
+  color: #a8ecff !important;
+  opacity: 0.78 !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .copy-code,
+body.od-admin-shell .msg .body pre .copy-code {
+  right: 10px !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .edit-code,
+body.od-admin-shell .msg .body pre .edit-code {
+  right: 46px !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .run-code,
+body.od-admin-shell .msg .body pre .run-code {
+  right: 82px !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .copy-code:hover,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .edit-code:hover,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre .run-code:hover,
+body.od-admin-shell .msg .body pre .copy-code:hover,
+body.od-admin-shell .msg .body pre .edit-code:hover,
+body.od-admin-shell .msg .body pre .run-code:hover {
+  border-color: #57d7ff !important;
+  background: #172542 !important;
+  color: #ffffff !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body :is(table, blockquote, .sources-section, .thinking-section),
+body.od-admin-shell .msg .body :is(table, blockquote, .sources-section, .thinking-section) {
+  max-width: 100% !important;
+}
+
+/* CyberVault code cards: ChatGPT-style output for fenced code responses. */
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card,
+body.od-admin-shell .chat-container.chat-flow-active .agent-thread pre.cv-code-card,
+body.od-admin-shell .msg .body pre.cv-code-card {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 14px 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  border: 1px solid rgba(51, 77, 122, 0.72) !important;
+  border-radius: 20px !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(88, 166, 255, 0.10), transparent 28%),
+    linear-gradient(180deg, rgba(11, 16, 28, 0.98), rgba(3, 7, 13, 0.98)) !important;
+  color: #eaf2ff !important;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.045) !important;
+  scrollbar-gutter: auto !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card .cv-code-card-head,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .cv-code-card-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  min-height: 54px !important;
+  padding: 13px 16px 11px 20px !important;
+  border-bottom: 1px solid rgba(56, 82, 127, 0.42) !important;
+  background: rgba(3, 7, 13, 0.72) !important;
+  color: #f8fbff !important;
+  white-space: normal !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card .cv-code-title,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .cv-code-title {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-width: 0 !important;
+  gap: 10px !important;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  color: #ffffff !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card .cv-code-glyph,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .cv-code-glyph {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  color: #ffffff !important;
+  font: 900 12px/1 ui-monospace, SFMono-Regular, Consolas, monospace !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card .cv-code-actions,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .cv-code-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  flex: 0 0 auto !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .copy-code,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .edit-code,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .run-code,
+body.od-admin-shell .msg .body pre.cv-code-card .copy-code,
+body.od-admin-shell .msg .body pre.cv-code-card .edit-code,
+body.od-admin-shell .msg .body pre.cv-code-card .run-code {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: 1 !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1px solid rgba(148, 163, 184, 0.30) !important;
+  border-radius: 999px !important;
+  background: rgba(2, 6, 13, 0.68) !important;
+  color: #e9f6ff !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card .run-code,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .run-code {
+  width: auto !important;
+  min-width: 74px !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+  gap: 8px !important;
+  color: #ffffff !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card .run-code span,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .run-code span {
+  display: inline !important;
+  font: 800 13px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .copy-code:hover,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .edit-code:hover,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card .run-code:hover,
+body.od-admin-shell .msg .body pre.cv-code-card .copy-code:hover,
+body.od-admin-shell .msg .body pre.cv-code-card .edit-code:hover,
+body.od-admin-shell .msg .body pre.cv-code-card .run-code:hover {
+  border-color: rgba(125, 230, 255, 0.72) !important;
+  background: rgba(15, 30, 55, 0.92) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card.buttons-hidden .copy-code,
+body.od-admin-shell .msg .body pre.cv-code-card.buttons-hidden .edit-code,
+body.od-admin-shell .msg .body pre.cv-code-card.buttons-hidden .run-code {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card code,
+body.od-admin-shell .chat-container.chat-flow-active .agent-thread pre.cv-code-card code,
+body.od-admin-shell .msg .body pre.cv-code-card code {
+  display: block !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 18px 20px 20px !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  white-space: pre !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  box-sizing: border-box !important;
+  color: #d8e6ff !important;
+  background: transparent !important;
+  border: 0 !important;
+  font: 13px/1.62 "Fira Code", "Cascadia Code", Consolas, monospace !important;
+  tab-size: 2 !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card.pre-compact,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card.pre-compact {
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card.pre-compact .copy-code::before,
+body.od-admin-shell .msg .body pre.cv-code-card.pre-compact .edit-code::after,
+body.od-admin-shell .msg .body pre.cv-code-card.pre-compact .run-code::after {
+  content: none !important;
+}
+
+body.od-admin-shell .msg .body pre.cv-code-card.editing::before,
+body.od-admin-shell .chat-container.chat-flow-active .msg .body pre.cv-code-card.editing::before {
+  top: 54px !important;
+  left: 0 !important;
+  border-radius: 0 0 8px 0 !important;
+}
+
+@media (max-width: 640px) {
+  body.od-admin-shell .msg .body pre.cv-code-card .cv-code-card-head {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+  body.od-admin-shell .msg .body pre.cv-code-card .cv-code-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+}
+
+.adm-local-oauth-panel {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #263957;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(31, 49, 78, 0.72), rgba(11, 18, 31, 0.94));
+  color: #dbeafe;
+}
+
+.adm-local-oauth-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.adm-local-oauth-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 24px;
+  padding: 3px 10px;
+  border: 1px solid #334868;
+  border-radius: 999px;
+  background: #0a1220;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.adm-local-oauth-state::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #64748b;
+  box-shadow: 0 0 10px rgba(100, 116, 139, 0.65);
+}
+
+.adm-local-oauth-state.is-ok::before {
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+}
+
+.adm-local-oauth-state.is-warn::before {
+  background: #f97316;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.7);
+}
+
+.adm-local-oauth-state.is-error::before {
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+}
+
+.adm-local-oauth-note,
+.adm-local-oauth-install {
+  color: #9db2d0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.adm-local-oauth-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.adm-local-oauth-code-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.adm-local-oauth-code-row input {
+  flex: 1 1 220px;
+  min-width: 0;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid #334868;
+  border-radius: 10px;
+  background: #08111f;
+  color: #dbeafe;
+  outline: none;
+  box-sizing: border-box;
+  font: 12px/1.2 Consolas, "SFMono-Regular", monospace;
+}
+
+.adm-local-oauth-code-row input:focus {
+  border-color: #4f63ff;
+  box-shadow: 0 0 0 2px rgba(79, 99, 255, 0.22);
+}
+
+.adm-local-oauth-install {
+  margin: 8px 0 10px;
+  padding: 10px;
+  border: 1px dashed #3b82f6;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.adm-local-oauth-install code {
+  color: #a5f3fc;
+}
+
+.adm-local-oauth-log {
+  min-height: 42px;
+  max-height: 170px;
+  margin: 0;
+  padding: 10px;
+  overflow: auto;
+  border: 1px solid #263957;
+  border-radius: 10px;
+  background: #070d18;
+  color: #a5f3fc;
+  font: 12px/1.45 Consolas, "SFMono-Regular", monospace;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 640px) {
+  .adm-local-oauth-code-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .adm-local-oauth-code-row .admin-btn-sm {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* CyberVault compact composer: ChatGPT-style pill alignment without colored glow. */
+body.od-admin-shell .chat-input-bar,
+body.od-admin-shell .chat-container.chat-flow-active .chat-input-bar,
+body.od-admin-shell .chat-container.welcome-active .chat-input-bar {
+  width: min(770px, calc(100vw - 32px)) !important;
+  max-width: 770px !important;
+  min-height: 56px !important;
+  margin: clamp(14px, 3vh, 28px) auto 0 !important;
+  padding: 7px 8px !important;
+  display: grid !important;
+  grid-template-columns: 38px minmax(120px, 1fr) auto !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  gap: 6px 8px !important;
+  border: 1px solid #2c3442 !important;
+  border-radius: 999px !important;
+  background: #202123 !important;
+  color: #f5f7fb !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+body.od-admin-shell .chat-input-bar[data-provider-brand="openai"],
+body.od-admin-shell .chat-input-bar[data-provider-brand="anthropic"] {
+  border-color: #2c3442 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-top {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  min-height: 40px !important;
+  height: auto !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: visible !important;
+  min-width: 0 !important;
+}
+
+body.od-admin-shell .chat-input-bar textarea#message {
+  min-height: 24px !important;
+  max-height: 84px !important;
+  height: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #f5f7fb !important;
+  font-size: 15px !important;
+  line-height: 1.45 !important;
+  resize: none !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-bar textarea#message::-webkit-scrollbar {
+  display: none !important;
+}
+
+body.od-admin-shell .chat-input-bar textarea#message:focus,
+body.od-admin-shell .chat-input-bar textarea#message:focus-visible {
+  outline: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-bar textarea#message::placeholder {
+  color: #a4a7ae !important;
+}
+
+body.od-admin-shell .chat-input-bottom {
+  display: contents !important;
+  visibility: visible !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+
+body.od-admin-shell .chat-input-left {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 40px !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+
+body.od-admin-shell .chat-input-left > :not(.overflow-wrapper):not(.tool-indicator) {
+  display: none !important;
+}
+
+body.od-admin-shell .overflow-wrapper {
+  display: inline-flex !important;
+}
+
+body.od-admin-shell .chat-input-right {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: min(390px, 52vw) !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+}
+
+body.od-admin-shell #pinned-tools-bar {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+}
+
+body.od-admin-shell #pinned-tools-bar:empty {
+  display: none !important;
+}
+
+body.od-admin-shell .input-icon-btn,
+body.od-admin-shell .overflow-plus-btn {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: #f5f7fb !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .input-icon-btn:hover,
+body.od-admin-shell .overflow-plus-btn:hover {
+  background: rgba(255,255,255,0.08) !important;
+  color: #ffffff !important;
+}
+
+body.od-admin-shell .provider-control-btn,
+body.od-admin-shell .chat-timer-btn,
+body.od-admin-shell .chat-input-right > .model-picker-wrap .model-picker-btn {
+  height: 34px !important;
+  min-height: 34px !important;
+  max-width: 116px !important;
+  padding: 0 9px !important;
+  border-radius: 999px !important;
+  border: 1px solid #3a414d !important;
+  background: transparent !important;
+  color: #eef2f7 !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+}
+
+body.od-admin-shell .provider-control-btn:hover,
+body.od-admin-shell .chat-timer-btn:hover,
+body.od-admin-shell .chat-input-right > .model-picker-wrap .model-picker-btn:hover,
+body.od-admin-shell .provider-control-btn[aria-expanded="true"],
+body.od-admin-shell .chat-timer-btn[aria-expanded="true"],
+body.od-admin-shell .chat-input-right > .model-picker-wrap .model-picker-btn[aria-expanded="true"] {
+  border-color: #555c69 !important;
+  background: rgba(255,255,255,0.06) !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-timer-btn.timer-armed {
+  border-color: #3a414d !important;
+  color: #eef2f7 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-right > .model-picker-wrap,
+body.od-admin-shell .chat-input-right > #model-picker-wrap {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 40 !important;
+  flex: 0 1 auto !important;
+}
+
+body.od-admin-shell .chat-input-right > .model-picker-wrap .model-picker-btn #model-picker-label {
+  max-width: 78px !important;
+}
+
+body.od-admin-shell .mode-toggle {
+  height: 34px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  border: 1px solid #3a414d !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .mode-toggle::before {
+  border-radius: 999px !important;
+}
+
+body.od-admin-shell .mode-toggle-btn {
+  height: 32px !important;
+  min-width: 40px !important;
+  padding: 0 9px !important;
+  border-radius: 999px !important;
+}
+
+body.od-admin-shell .send-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 860px) {
+  body.od-admin-shell .chat-input-bar,
+  body.od-admin-shell .chat-container.chat-flow-active .chat-input-bar,
+  body.od-admin-shell .chat-container.welcome-active .chat-input-bar {
+    grid-template-columns: 38px minmax(0, 1fr) auto !important;
+    border-radius: 28px !important;
+  }
+
+  body.od-admin-shell .chat-input-right {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    max-width: 100% !important;
+    justify-content: flex-end !important;
+    flex-wrap: wrap !important;
+    padding: 0 4px 2px !important;
+  }
+
+  body.od-admin-shell .chat-input-left {
+    align-self: start !important;
+  }
+}
+
+/* CyberVault compact composer final pass: neutral ChatGPT-style controls. */
+body.od-admin-shell .chat-input-bar,
+body.od-admin-shell .chat-container.chat-flow-active .chat-input-bar,
+body.od-admin-shell .chat-container.welcome-active .chat-input-bar {
+  border-color: #2c3442 !important;
+  background: #202123 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-bar[data-provider-brand],
+body.od-admin-shell .chat-input-bar:focus-within {
+  border-color: #3a414d !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .chat-input-bar textarea#message,
+body.od-admin-shell .chat-input-bar textarea#message:focus,
+body.od-admin-shell .chat-input-bar textarea#message:focus-visible {
+  overflow-y: hidden !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+body.od-admin-shell .model-picker-menu,
+body.od-admin-shell .provider-control-menu,
+body.od-admin-shell .chat-timer-menu {
+  border: 1px solid #2f3948 !important;
+  background: #121826 !important;
+  box-shadow: 0 18px 55px rgba(0,0,0,0.5) !important;
+}
+
+body.od-admin-shell .model-picker-menu input[type="text"] {
+  border-color: #3a414d !important;
+  background: #101522 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .model-picker-menu input[type="text"]:focus {
+  border-color: #596273 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .model-picker-list .model-switch-item {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+body.od-admin-shell .model-picker-list .model-switch-item:hover,
+body.od-admin-shell .model-picker-list .model-switch-item.kb-active,
+body.od-admin-shell .provider-menu-item:hover,
+body.od-admin-shell .provider-menu-item:focus-visible {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: #344053 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .model-picker-list .model-switch-item.active,
+body.od-admin-shell .model-picker-list .model-switch-item[aria-selected="true"],
+body.od-admin-shell .provider-menu-item.active:not(:hover):not(:focus-visible) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .model-picker-list .provider-logo.model-tier-logo {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 16px !important;
+  letter-spacing: 0 !important;
+}
+
+body.od-admin-shell .model-picker-list .provider-logo.model-claude-logo,
+body.od-admin-shell .model-picker-logo.model-claude-logo,
+body.od-admin-shell .provider-logo.provider-anthropic {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .model-picker-list .provider-logo.model-claude-logo img,
+body.od-admin-shell .model-picker-logo.model-claude-logo img,
+body.od-admin-shell .provider-logo.provider-anthropic img {
+  border-radius: 999px !important;
+  object-fit: cover !important;
+}
+
+/* CyberVault confirm/reset dialogs: unified neutral modal surface. */
+body.od-admin-shell #styled-confirm-overlay {
+  background: rgba(0, 0, 0, 0.68) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .styled-confirm-box,
+body.od-admin-shell #styled-confirm-overlay .modal-content {
+  width: min(390px, calc(100vw - 28px)) !important;
+  max-width: calc(100vw - 28px) !important;
+  border: 1px solid #303a4b !important;
+  border-radius: 18px !important;
+  background: #121826 !important;
+  color: #f5f7fb !important;
+  box-shadow: 0 22px 70px rgba(0,0,0,0.58) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .modal-header {
+  min-height: 70px !important;
+  padding: 24px 24px 20px !important;
+  border-bottom: 1px solid #2a3445 !important;
+  background: #141b2a !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .modal-header h4 {
+  color: #f5f7fb !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .modal-body {
+  padding: 22px 24px !important;
+  border-bottom: 1px solid #2a3445 !important;
+  background: #121826 !important;
+}
+
+body.od-admin-shell #styled-confirm-msg {
+  color: #b6eaff !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .modal-footer {
+  padding: 10px 14px 14px !important;
+  gap: 8px !important;
+  border: 0 !important;
+  background: #121826 !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .confirm-btn {
+  height: 36px !important;
+  min-width: 82px !important;
+  padding: 0 16px !important;
+  border-radius: 10px !important;
+  border: 1px solid #3b4659 !important;
+  background: #151c2b !important;
+  color: #eef2f7 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .confirm-btn-secondary:hover {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: #586276 !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .confirm-btn-danger,
+body.od-admin-shell #styled-confirm-overlay .confirm-btn-primary {
+  border-color: #fb7185 !important;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+body.od-admin-shell #styled-confirm-overlay .confirm-btn-danger:hover,
+body.od-admin-shell #styled-confirm-overlay .confirm-btn-primary:hover {
+  background: #ef4444 !important;
+  filter: none !important;
+}
+
+/* CyberVault composer control row: keep controls outside and below the input. */
+body.od-admin-shell .chat-input-bar,
+body.od-admin-shell .chat-container.chat-flow-active .chat-input-bar,
+body.od-admin-shell .chat-container.welcome-active .chat-input-bar {
+  width: min(770px, calc(100vw - 32px)) !important;
+  max-width: 770px !important;
+  min-height: 56px !important;
+  padding: 8px 10px !important;
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  grid-template-rows: 40px !important;
+  align-items: center !important;
+  row-gap: 0 !important;
+  border-radius: 999px !important;
+  overflow: visible !important;
+  position: relative !important;
+  margin-bottom: 58px !important;
+}
+
+body.od-admin-shell .chat-input-top {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+body.od-admin-shell .chat-input-left {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+
+body.od-admin-shell .chat-input-right {
+  position: absolute !important;
+  left: 50% !important;
+  top: calc(100% + 12px) !important;
+  transform: translateX(-50%) !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: auto !important;
+  max-width: calc(100vw - 32px) !important;
+  min-height: 40px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;
+  gap: 7px !important;
+  flex-wrap: nowrap !important;
+  z-index: 45 !important;
+}
+
+body.od-admin-shell .provider-control-btn,
+body.od-admin-shell .chat-timer-btn,
+body.od-admin-shell .chat-input-right > .model-picker-wrap .model-picker-btn {
+  max-width: 180px !important;
+}
+
+body.od-admin-shell .chat-input-right > .model-picker-wrap .model-picker-btn #model-picker-label {
+  max-width: 126px !important;
+}
+
+body.od-admin-shell .mode-toggle {
+  flex: 0 0 auto !important;
+}
+
+body.od-admin-shell .send-btn {
+  flex: 0 0 40px !important;
+}
+
+@media (max-width: 700px) {
+  body.od-admin-shell .chat-input-bar,
+  body.od-admin-shell .chat-container.chat-flow-active .chat-input-bar,
+  body.od-admin-shell .chat-container.welcome-active .chat-input-bar {
+    min-height: 56px !important;
+    grid-template-rows: 40px !important;
+    border-radius: 28px !important;
+    margin-bottom: 104px !important;
+  }
+
+  body.od-admin-shell .chat-input-right {
+    justify-content: center !important;
+    align-content: flex-start !important;
+    width: min(100%, calc(100vw - 32px)) !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+/* CyberVault composer split: model/provider/timer below, mode/send in the input. */
+body.od-admin-shell .chat-input-bar,
+body.od-admin-shell .chat-container.chat-flow-active .chat-input-bar,
+body.od-admin-shell .chat-container.welcome-active .chat-input-bar {
+  grid-template-columns: 38px minmax(0, 1fr) auto !important;
+  grid-template-rows: 40px !important;
+  margin-bottom: 58px !important;
+}
+
+body.od-admin-shell .chat-input-right {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  width: auto !important;
+  max-width: none !important;
+  min-height: 40px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  padding: 0 !important;
+  gap: 7px !important;
+  flex-wrap: nowrap !important;
+  z-index: 3 !important;
+}
+
+body.od-admin-shell .chat-input-external-controls {
+  position: absolute !important;
+  left: 50% !important;
+  top: calc(100% + 12px) !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  max-width: calc(100vw - 32px) !important;
+  min-height: 40px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 7px !important;
+  flex-wrap: nowrap !important;
+  padding: 0 !important;
+  z-index: 45 !important;
+}
+
+body.od-admin-shell .chat-input-external-controls > .model-picker-wrap,
+body.od-admin-shell .chat-input-external-controls > #model-picker-wrap,
+body.od-admin-shell .chat-input-external-controls > .provider-control-wrap,
+body.od-admin-shell .chat-input-external-controls > .chat-timer-wrap {
+  position: relative !important;
+  inset: auto !important;
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+}
+
+body.od-admin-shell .chat-input-external-controls > .model-picker-wrap .model-picker-btn,
+body.od-admin-shell .chat-input-external-controls .provider-control-btn,
+body.od-admin-shell .chat-input-external-controls .chat-timer-btn {
+  max-width: 180px !important;
+}
+
+body.od-admin-shell .chat-input-external-controls > .model-picker-wrap .model-picker-btn #model-picker-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  max-width: 126px !important;
+  line-height: 1 !important;
+}
+
+body.od-admin-shell .chat-input-right > .model-picker-wrap,
+body.od-admin-shell .chat-input-right > #model-picker-wrap,
+body.od-admin-shell .chat-input-right > .provider-control-wrap,
+body.od-admin-shell .chat-input-right > .chat-timer-wrap {
+  display: none !important;
+}
+
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .model-picker-wrap,
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > #model-picker-wrap,
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .provider-control-wrap,
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .chat-timer-wrap {
+  display: flex !important;
+  position: absolute !important;
+  top: calc(100% + 7px) !important;
+  transform: none !important;
+  z-index: 45 !important;
+}
+
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .model-picker-wrap,
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > #model-picker-wrap {
+  left: calc(50% - 151px) !important;
+}
+
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .model-picker-wrap .model-picker-btn,
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > #model-picker-wrap .model-picker-btn {
+  width: auto !important;
+  max-width: 180px !important;
+  min-width: 0 !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .model-picker-wrap .model-picker-btn #model-picker-label,
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > #model-picker-wrap .model-picker-btn #model-picker-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  max-width: 128px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .provider-control-wrap {
+  left: calc(50% - 38px) !important;
+}
+
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .provider-control-wrap .provider-control-btn {
+  width: auto !important;
+  max-width: 152px !important;
+  min-width: 0 !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+body.od-admin-shell .provider-control-label,
+body.od-admin-shell #provider-control-label {
+  display: inline-block !important;
+  min-width: 0 !important;
+  max-width: 102px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .chat-timer-wrap {
+  left: calc(50% + 73px) !important;
+}
+
+body.od-admin-shell .chat-input-right .mode-toggle {
+  flex: 0 0 auto !important;
+}
+
+body.od-admin-shell .chat-input-right .send-btn {
+  flex: 0 0 40px !important;
+}
+
+body.od-admin-shell .provider-control-icon .provider-logo-img,
+body.od-admin-shell .model-picker-logo.model-claude-logo img,
+body.od-admin-shell .provider-logo.provider-anthropic img {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .model-picker-btn .model-picker-logo.model-claude-logo,
+body.od-admin-shell #model-picker-label .model-picker-logo.model-claude-logo {
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+  transform: translateY(-0.5px) !important;
+}
+
+body.od-admin-shell .provider-control-icon {
+  width: 18px !important;
+  height: 18px !important;
+  flex-basis: 18px !important;
+}
+
+body.od-admin-shell .provider-effort-glyph {
+  width: 18px !important;
+  height: 18px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  background: transparent !important;
+  color: #a9c7ff !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .provider-control-btn,
+body.od-admin-shell .chat-input-external-controls > .model-picker-wrap .model-picker-btn,
+body.od-admin-shell .chat-input-bar:not([data-controls-split="1"]) .chat-input-right > .model-picker-wrap .model-picker-btn {
+  gap: 6px !important;
+}
+
+/* CyberVault welcome guard: never leave the logo/title invisible on blank chat. */
+body.od-admin-shell.cybervault-chat-route #welcome-screen:not(.hidden),
+body.od-admin-shell.cybervault-chat-route .chat-container.welcome-active #welcome-screen:not(.hidden) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+body.od-admin-shell.cybervault-chat-route #welcome-screen .cybervault-logo-hero {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+body.od-admin-shell.cybervault-chat-route .chat-container.welcome-active {
+  row-gap: 14px !important;
+}
+
+body.od-admin-shell.cybervault-chat-route .chat-input-external-controls {
+  top: calc(100% + 7px) !important;
+}
+
+/* CyberVault composer spacing: keep model, effort, and Keep grouped. */
+body.od-admin-shell .chat-input-external-controls,
+body.od-admin-shell.cybervault-chat-route .chat-input-external-controls,
+body.od-admin-shell .chat-container.chat-flow-active .chat-input-external-controls,
+body.od-admin-shell .chat-container.welcome-active .chat-input-external-controls {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: max-content !important;
+  max-width: calc(100vw - 32px) !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 4px !important;
+  column-gap: 4px !important;
+  row-gap: 6px !important;
+}
+
+body.od-admin-shell .chat-input-external-controls > .model-picker-wrap,
+body.od-admin-shell .chat-input-external-controls > #model-picker-wrap,
+body.od-admin-shell .chat-input-external-controls > .provider-control-wrap,
+body.od-admin-shell .chat-input-external-controls > .chat-timer-wrap {
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+body.od-admin-shell .chat-input-external-controls .chat-timer-wrap {
+  margin-left: 0 !important;
+}
+
+@media (max-width: 700px) {
+  body.od-admin-shell .chat-input-bar,
+  body.od-admin-shell .chat-container.chat-flow-active .chat-input-bar,
+  body.od-admin-shell .chat-container.welcome-active .chat-input-bar {
+    margin-bottom: 104px !important;
+  }
+
+  body.od-admin-shell .chat-input-external-controls {
+    width: min(100%, calc(100vw - 32px)) !important;
+    flex-wrap: wrap !important;
+  }
+
+  body.od-admin-shell .chat-input-right {
+    gap: 5px !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   CyberVault Design System — consolidation pass (keep LAST in file)
+   One place that settles the final look of shared chrome. Values come
+   from the token block ("CyberVault design tokens") — never hardcode.
+   Order matters: this layer intentionally wins over the patch passes
+   above it. Layout positioning stays untouched; this is visual polish.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Sidebar ─────────────────────────────────────────────────── */
+
+/* Header: brand alignment, quiet bottom rule */
+body.od-admin-shell .sidebar-header {
+  padding: 0 20px !important;
+  border-bottom: 1px solid var(--od-admin-border) !important;
+}
+
+body.od-admin-shell .sidebar-brand { gap: 10px !important; }
+
+body.od-admin-shell .sidebar-brand-title {
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  color: var(--od-admin-text) !important;
+}
+
+/* Rows: identical height, padding, icon size, and type everywhere */
+body.od-admin-shell .section-header-flex,
+body.od-admin-shell .list-item,
+body.od-admin-shell #sidebar-search-btn,
+body.od-admin-shell #sidebar-new-chat-btn,
+body.od-admin-shell .sidebar-assistant-entry {
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 0 14px !important;
+  gap: 12px !important;
+  border-radius: var(--od-admin-radius-sm) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--od-admin-text-2) !important;
+  background: transparent;
+  box-shadow: none !important;
+  transition: background .14s ease, color .14s ease;
+}
+
+/* Kill the old inline nudge hacks so icons align to one grid */
+body.od-admin-shell .list-item > svg,
+body.od-admin-shell .list-item > .grow,
+body.od-admin-shell .list-item span.grow {
+  position: static !important;
+  left: 0 !important;
+}
+
+body.od-admin-shell .sidebar svg,
+body.od-admin-shell .sidebar-action-icon,
+body.od-admin-shell .section-icon {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+  stroke-width: 2 !important;
+}
+
+/* Quiet default → soft hover → clear (not loud) active */
+body.od-admin-shell .section-header-flex:hover,
+body.od-admin-shell .list-item:hover,
+body.od-admin-shell #sidebar-search-btn:hover,
+body.od-admin-shell #sidebar-new-chat-btn:hover,
+body.od-admin-shell .sidebar-assistant-entry:hover {
+  background: var(--od-admin-panel-hover) !important;
+  color: var(--od-admin-text) !important;
+  box-shadow: none !important;
+}
+
+body.od-admin-shell .list-item.active,
+body.od-admin-shell .list-item.selected,
+body.od-admin-shell .section-header-flex.active {
+  background: color-mix(in srgb, var(--od-admin-blue) 16%, transparent) !important;
+  color: var(--od-admin-text) !important;
+  box-shadow: inset 2px 0 0 var(--od-admin-blue) !important;
+}
+
+/* New Chat reads as a primary action, slightly set apart */
+body.od-admin-shell #sidebar-new-chat-btn {
+  color: var(--od-admin-text) !important;
+}
+body.od-admin-shell #sidebar-new-chat-btn svg { color: var(--od-admin-blue-hover) !important; }
+body.od-admin-shell #sidebar-new-chat-btn:hover {
+  background: color-mix(in srgb, var(--od-admin-blue) 18%, transparent) !important;
+}
+
+/* Section chevrons: one size, smooth flip */
+body.od-admin-shell .adm-section-caret,
+body.od-admin-shell .adm-provider-caret {
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--od-admin-muted) !important;
+  transition: transform .16s ease;
+}
+
+/* Plus / manage buttons beside section titles */
+body.od-admin-shell .section-header-btn,
+body.od-admin-shell .list-item-plus-btn,
+body.od-admin-shell .chats-manage-btn {
+  width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: 7px !important;
+  background: var(--od-admin-panel-soft) !important;
+  color: var(--od-admin-muted) !important;
+  box-shadow: none !important;
+}
+body.od-admin-shell .section-header-btn:hover,
+body.od-admin-shell .list-item-plus-btn:hover,
+body.od-admin-shell .chats-manage-btn:hover {
+  border-color: var(--od-admin-border-strong) !important;
+  background: var(--od-admin-panel-hover) !important;
+  color: var(--od-admin-text) !important;
+}
+
+/* Bottom user bar: attached, aligned, same icon language */
+body.od-admin-shell .sidebar-user-bar {
+  height: 64px !important;
+  min-height: 64px !important;
+  padding: 0 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  background: var(--od-admin-sidebar) !important;
+  border-top: 1px solid var(--od-admin-border) !important;
+}
+body.od-admin-shell .user-bar-left { display: flex !important; align-items: center !important; gap: 10px !important; min-width: 0; }
+body.od-admin-shell .user-bar-avatar {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--od-admin-border-strong) !important;
+  flex: 0 0 30px;
+}
+body.od-admin-shell .user-bar-name {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--od-admin-text-2) !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.od-admin-shell .user-bar-btn {
+  width: 30px !important;
+  height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: var(--od-admin-radius-sm) !important;
+  background: var(--od-admin-panel-soft) !important;
+  color: var(--od-admin-muted) !important;
+  transition: border-color .14s ease, color .14s ease, background .14s ease;
+}
+body.od-admin-shell .user-bar-btn:hover {
+  border-color: var(--od-admin-border-strong) !important;
+  background: var(--od-admin-panel-hover) !important;
+  color: var(--od-admin-text) !important;
+}
+
+/* ── 2. Welcome card ────────────────────────────────────────────── */
+
+body.od-admin-shell #welcome-screen {
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: var(--od-admin-radius-lg) !important;
+  background:
+    linear-gradient(180deg, rgba(96,165,250,0.045), rgba(96,165,250,0) 55%),
+    var(--od-admin-panel-soft) !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.45),
+    0 0 42px rgba(79, 107, 255, 0.07) !important;
+}
+
+body.od-admin-shell #welcome-screen .cybervault-logo-hero {
+  width: 92px !important;
+  height: 92px !important;
+  object-fit: contain;
+  border-radius: 20px;
+  filter: drop-shadow(0 6px 22px rgba(34, 199, 216, 0.25));
+}
+
+body.od-admin-shell #welcome-screen .welcome-name {
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--od-admin-text) !important;
+}
+
+body.od-admin-shell #welcome-screen .welcome-sub,
+body.od-admin-shell #welcome-screen .welcome-tip {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--od-admin-muted) !important;
+}
+
+/* The "eye" is Anonymous mode — make it look like a deliberate control */
+body.od-admin-shell #welcome-screen .incognito-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: 999px !important;
+  background: var(--od-admin-panel-soft) !important;
+  color: var(--od-admin-muted) !important;
+  box-shadow: none !important;
+  transition: border-color .14s ease, color .14s ease;
+}
+body.od-admin-shell #welcome-screen .incognito-btn:hover {
+  border-color: var(--od-admin-border-strong) !important;
+  color: var(--od-admin-text) !important;
+}
+
+/* ── 3. Composer ────────────────────────────────────────────────── */
+
+body.od-admin-shell .chat-input-bar {
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: var(--od-admin-radius-lg) !important;
+  background: var(--od-admin-panel-soft) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4) !important;
+}
+body.od-admin-shell .chat-input-bar:focus-within {
+  border-color: var(--od-admin-border-strong) !important;
+}
+
+body.od-admin-shell .chat-input-bar textarea,
+body.od-admin-shell .chat-input-bar textarea::placeholder {
+  font-family: var(--font-family) !important;
+}
+body.od-admin-shell .chat-input-bar textarea::placeholder {
+  color: var(--od-admin-muted) !important;
+  opacity: 1;
+}
+
+/* Left "+" and other in-bar icon buttons */
+body.od-admin-shell .input-icon-btn {
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--od-admin-muted) !important;
+  transition: background .14s ease, color .14s ease;
+}
+body.od-admin-shell .input-icon-btn:hover {
+  background: var(--od-admin-panel-hover) !important;
+  color: var(--od-admin-text) !important;
+}
+
+/* Agent / Chat segmented toggle */
+body.od-admin-shell .mode-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  padding: 2px !important;
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: 999px !important;
+  background: var(--od-admin-panel-deep) !important;
+}
+body.od-admin-shell .mode-toggle-btn {
+  height: 26px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--od-admin-muted) !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  transition: background .14s ease, color .14s ease;
+}
+body.od-admin-shell .mode-toggle-btn:hover { color: var(--od-admin-text) !important; }
+body.od-admin-shell .mode-toggle-btn.active {
+  background: var(--od-admin-blue) !important;
+  color: #ffffff !important;
+}
+
+/* Send button: perfect circle, centered glyph, real states */
+body.od-admin-shell .send-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--od-admin-blue) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(79, 107, 255, 0.35) !important;
+  transition: background .14s ease, transform .14s ease, box-shadow .14s ease;
+}
+body.od-admin-shell .send-btn:hover:not(:disabled) {
+  background: var(--od-admin-blue-hover) !important;
+  transform: translateY(-1px);
+}
+body.od-admin-shell .send-btn:active:not(:disabled) { transform: translateY(0); }
+body.od-admin-shell .send-btn:disabled {
+  background: var(--od-admin-panel-active) !important;
+  color: var(--od-admin-muted) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+body.od-admin-shell .send-btn svg { display: block; }
+
+/* Wide "+ New" variant keeps pill shape */
+body.od-admin-shell .send-btn.newchat-mode {
+  width: auto !important;
+  padding: 0 14px !important;
+  gap: 6px !important;
+}
+
+/* Model / effort / Keep pills: one shared pill recipe */
+body.od-admin-shell .model-picker-btn,
+body.od-admin-shell .provider-control-btn,
+body.od-admin-shell .chat-timer-btn {
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: 999px !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text-2) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  transition: border-color .14s ease, background .14s ease, color .14s ease;
+}
+body.od-admin-shell .model-picker-btn:hover,
+body.od-admin-shell .provider-control-btn:hover,
+body.od-admin-shell .chat-timer-btn:hover {
+  border-color: var(--od-admin-border-strong) !important;
+  background: var(--od-admin-panel-hover) !important;
+  color: var(--od-admin-text) !important;
+}
+body.od-admin-shell .model-picker-btn[aria-expanded="true"],
+body.od-admin-shell .provider-control-btn[aria-expanded="true"],
+body.od-admin-shell .chat-timer-btn[aria-expanded="true"] {
+  border-color: var(--od-admin-blue) !important;
+  background: var(--od-admin-panel-hover) !important;
+  color: var(--od-admin-text) !important;
+}
+body.od-admin-shell .model-picker-btn svg,
+body.od-admin-shell .provider-control-btn svg,
+body.od-admin-shell .chat-timer-btn svg {
+  width: 13px !important;
+  height: 13px !important;
+  flex: 0 0 13px;
+}
+body.od-admin-shell .chat-input-external-controls { gap: 8px !important; column-gap: 8px !important; }
+
+/* ── 4. Shared chrome: menus, modals, inputs, toasts, scrollbars ── */
+
+/* Dropdown / popover surfaces */
+body.od-admin-shell .export-dropdown-menu,
+body.od-admin-shell .model-picker-menu,
+body.od-admin-shell .provider-control-menu,
+body.od-admin-shell .chat-timer-menu,
+body.od-admin-shell .overflow-menu {
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: var(--od-admin-radius) !important;
+  background: var(--od-admin-panel) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55) !important;
+  overflow: hidden;
+}
+body.od-admin-shell .export-dropdown-item:hover,
+body.od-admin-shell .overflow-menu-item:hover {
+  background: var(--od-admin-panel-hover) !important;
+  color: var(--od-admin-text) !important;
+}
+
+/* Modal surfaces */
+body.od-admin-shell .modal-content {
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: var(--od-admin-radius-lg) !important;
+  background: var(--od-admin-panel) !important;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Form fields */
+body.od-admin-shell input[type="text"],
+body.od-admin-shell input[type="search"],
+body.od-admin-shell input[type="email"],
+body.od-admin-shell input[type="password"],
+body.od-admin-shell input[type="number"],
+body.od-admin-shell input[type="url"],
+body.od-admin-shell select,
+body.od-admin-shell textarea {
+  border-color: var(--od-admin-border);
+  border-radius: var(--od-admin-radius-sm);
+  color: var(--od-admin-text);
+  font-family: var(--font-family);
+}
+body.od-admin-shell input:focus-visible,
+body.od-admin-shell select:focus-visible,
+body.od-admin-shell textarea:focus-visible {
+  outline: none;
+  border-color: var(--od-admin-blue) !important;
+  box-shadow: var(--od-admin-focus-ring) !important;
+}
+
+/* Toasts */
+body.od-admin-shell .toast {
+  border: 1px solid var(--od-admin-border) !important;
+  border-radius: var(--od-admin-radius) !important;
+  background: var(--od-admin-panel) !important;
+  color: var(--od-admin-text-2) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Keyboard focus: one visible ring everywhere, no default outlines */
+body.od-admin-shell button:focus-visible,
+body.od-admin-shell .list-item:focus-visible,
+body.od-admin-shell .section-header-flex:focus-visible,
+body.od-admin-shell a:focus-visible {
+  outline: none !important;
+  box-shadow: var(--od-admin-focus-ring) !important;
+}
+
+/* Disabled: consistent, clearly inert */
+body.od-admin-shell button:disabled,
+body.od-admin-shell .list-item[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed !important;
+}
+
+/* Scrollbars: slim, blue-gray, quiet */
+body.od-admin-shell ::-webkit-scrollbar { width: 10px; height: 10px; }
+body.od-admin-shell ::-webkit-scrollbar-track { background: transparent; }
+body.od-admin-shell ::-webkit-scrollbar-thumb {
+  background: rgba(96, 165, 250, 0.22);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+body.od-admin-shell ::-webkit-scrollbar-thumb:hover {
+  background: rgba(96, 165, 250, 0.38);
+  background-clip: content-box;
+}
+
+/* ── 5. Responsive guards ───────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  body.od-admin-shell .chat-input-external-controls {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    row-gap: 6px !important;
+  }
+  body.od-admin-shell #welcome-screen {
+    width: min(92vw, 560px) !important;
+    max-width: 92vw !important;
+  }
+}
+
+@media (max-width: 700px) {
+  body.od-admin-shell #welcome-screen .welcome-name { font-size: 26px !important; }
+  body.od-admin-shell #welcome-screen .cybervault-logo-hero {
+    width: 72px !important;
+    height: 72px !important;
+  }
 }
