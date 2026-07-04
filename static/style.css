@@ -45954,9 +45954,10 @@ body.od-admin-shell .chat-input-external-controls .chat-timer-wrap {
 
 /* ── 1. Sidebar ─────────────────────────────────────────────────── */
 
-/* Header: brand alignment, quiet bottom rule */
+/* Header: brand alignment, quiet bottom rule. Left padding clears the
+   fixed hamburger button (12px + 34px + 12px gap). */
 body.od-admin-shell .sidebar-header {
-  padding: 0 20px !important;
+  padding: 0 20px 0 58px !important;
   border-bottom: 1px solid var(--od-admin-border) !important;
 }
 
@@ -46165,6 +46166,12 @@ body.od-admin-shell #welcome-screen .incognito-btn:hover {
   border-color: var(--od-admin-border-strong) !important;
   color: var(--od-admin-text) !important;
 }
+/* Older rules collapse this svg to 0 width — restore the eye glyph */
+body.od-admin-shell #welcome-screen .incognito-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+  flex: 0 0 14px;
+}
 
 /* ── 3. Composer ────────────────────────────────────────────────── */
 
@@ -46187,22 +46194,27 @@ body.od-admin-shell .chat-input-bar textarea::placeholder {
   opacity: 1;
 }
 
-/* Left "+" and other in-bar icon buttons */
+/* In-bar icon buttons: shared hover language only — never force display
+   or size on the whole class (tool indicators show/hide via their own
+   rules and some carry text labels). */
 body.od-admin-shell .input-icon-btn {
-  width: 32px !important;
-  height: 32px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 1px solid transparent !important;
   border-radius: 999px !important;
-  background: transparent !important;
-  color: var(--od-admin-muted) !important;
+  color: var(--od-admin-muted);
   transition: background .14s ease, color .14s ease;
 }
 body.od-admin-shell .input-icon-btn:hover {
   background: var(--od-admin-panel-hover) !important;
   color: var(--od-admin-text) !important;
+}
+
+/* The left "+" is icon-only and always visible: a true 32px circle */
+body.od-admin-shell #overflow-plus-btn {
+  width: 32px !important;
+  height: 32px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
 }
 
 /* Agent / Chat segmented toggle */
