@@ -16151,6 +16151,20 @@ body:not(.email-doc-split-active) #email-lib-modal.email-lib-fullscreen:not(.mod
   border-radius: 0 !important;
   transform: none !important;
 }
+/* Email route-view parity with the Library/Documents route: init.js's
+   --sidebar-w sync never runs, so the calc() above resolves left to just the
+   icon-rail width (48px) and the fullscreen email COVERS the labeled sidebar —
+   unlike every other tool route, which sits beside it. Offset by the skin's own
+   sidebar width token so the sidebar stays visible; fall back to the icon rail
+   only when the sidebar is actually collapsed. Mirrors the doclib v2.1 fix. */
+@media (min-width: 769px) {
+  body.od-admin-shell:not(.email-doc-split-active) #email-lib-modal.email-lib-fullscreen:not(.modal-right-docked) .modal-content {
+    left: var(--cyber-sidebar-w, 288px) !important;
+  }
+  body.od-admin-shell:has(.sidebar.hidden):not(.email-doc-split-active) #email-lib-modal.email-lib-fullscreen:not(.modal-right-docked) .modal-content {
+    left: var(--icon-rail-w, 48px) !important;
+  }
+}
 /* Mobile: the /email route adds .email-lib-fullscreen, but the desktop full-
    bleed rule above squares off the corners and offsets the email by the icon
    rail. On phones the email should be the normal bottom-sheet — full width,
@@ -44499,6 +44513,15 @@ body.od-admin-shell #email-lib-modal .doclib-search {
   background: #07101f !important;
   color: var(--od-admin-text) !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02) !important;
+}
+/* The chip-bar is a DIV (not input/select/textarea), so the rule above misses
+   it and it falls back to var(--bg) (#282c34) — a light gray that clashes with
+   the dark skin. It already sits inside the bordered, dark .email-search-wrap,
+   so make it transparent/borderless: one clean search field, not a gray box. */
+body.od-admin-shell #email-lib-modal .email-lib-chip-bar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 body.od-admin-shell #research-overlay .research-query {

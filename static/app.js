@@ -1395,6 +1395,25 @@ function initializeEventListeners() {
         _closeRouteToolViews('cookbook-modal');
         cookbookModule?.open?.();
         _promoteRouteModal('cookbook-modal');
+        // Cookbook reveals its modal asynchronously (hardware scan), so the
+        // standard promote retries (<=180ms) can all run while it is still
+        // .hidden and miss — leaving it a floating modal instead of a route
+        // panel. Watch until it is visible, then apply the route-view class
+        // (re-applying if a late re-render drops it). Self-stops on navigation.
+        const _cbModal = document.getElementById('cookbook-modal');
+        if (_cbModal) {
+          let _cbTries = 0;
+          const _cbIv = setInterval(() => {
+            if (window.location.pathname !== '/cookbook' || ++_cbTries > 40) {
+              clearInterval(_cbIv);
+              return;
+            }
+            if (!_cbModal.classList.contains('hidden') &&
+                !_cbModal.classList.contains('cybervault-route-view')) {
+              _promoteRouteModal('cookbook-modal');
+            }
+          }, 100);
+        }
       },
       '/email': () => {
         _closeRouteToolViews();

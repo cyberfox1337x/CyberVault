@@ -1706,17 +1706,30 @@ async function _loadFolders({ resetMissing = false } = {}) {
       if (f === state._libFolder) opt.selected = true;
       sel.appendChild(opt);
     }
-    // Scheduled (special virtual folder)
-    const sep2 = document.createElement('option');
-    sep2.disabled = true;
-    sep2.textContent = '─────────';
-    sel.appendChild(sep2);
+    // Scheduled (special virtual folder). Only draw the separator above it when
+    // real folders exist — with no account configured, folders is empty, so a
+    // leading disabled separator would become the selected option and render the
+    // dropdown as an empty dashed line. Without it, "Scheduled" shows instead.
+    if (priority.length > 0 || others.length > 0) {
+      const sep2 = document.createElement('option');
+      sep2.disabled = true;
+      sep2.textContent = '─────────';
+      sel.appendChild(sep2);
+    }
     const schedOpt = document.createElement('option');
     schedOpt.value = '__scheduled__';
     schedOpt.textContent = 'Scheduled';
     if (state._libFolder === '__scheduled__') schedOpt.selected = true;
     sel.appendChild(schedOpt);
     sel.value = state._libFolder;
+    // If the persisted folder isn't among the current options (e.g. no account
+    // configured, so only "Scheduled" exists), setting .value to a missing value
+    // leaves selectedIndex at -1 and the control renders blank. Fall back to the
+    // first selectable option so the dropdown never shows an empty box.
+    if (sel.selectedIndex < 0) {
+      const _firstSel = Array.from(sel.options).find((o) => !o.disabled);
+      if (_firstSel) _firstSel.selected = true;
+    }
   } catch (e) {}
 }
 
